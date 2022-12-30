@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Terrain2DScript : MonoBehaviour
 {
-    public Gradient gradient;
+    public Gradient primaryGradient;
+    public Gradient secondaryGradient;
     public SpriteRenderer spriteRend;
     // Start is called before the first frame update
     void Start()
     {
-        spriteRend.sprite = Sprite.Create(GradientToTex(gradient,256), Rect.MinMaxRect(0,0,1,1), Vector2.zero);
+        spriteRend.sprite = Sprite.Create(GradientToTex(primaryGradient,256), Rect.MinMaxRect(0,0,1,1), Vector2.zero);
     }
 
     // Update is called once per frame
@@ -28,6 +29,7 @@ public class Terrain2DScript : MonoBehaviour
         Texture2D tex = new Texture2D(resolution, 1);
         for (int pix = 0; pix < resolution; pix++) tex.SetPixel(pix, 0, col.Evaluate((float)pix / resolution));
         tex.Apply();
+        tex.filterMode = FilterMode.Point;
         return tex;
     }
 }

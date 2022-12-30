@@ -5,7 +5,7 @@ using UnityEngine;
 //Reimplementations of the imported shader code so that in-game mechanics can be direct representation of shader's
 public static class ShaderFunctions
 {
-    static float ClassicNoise_impl(Vector3 pi0, Vector3 pf0, Vector3 pi1, Vector3 pf1)
+    public static float ClassicNoise_impl(Vector3 pi0, Vector3 pf0, Vector3 pi1, Vector3 pf1)
     {
         pi0 = wglnoise_mod289(pi0);
         pi1 = wglnoise_mod289(pi1);
@@ -62,7 +62,7 @@ public static class ShaderFunctions
     }
 
     // Classic Perlin noise
-    static float ClassicNoise(Vector3 p)
+    public static float ClassicNoise(Vector3 p)
     {
         Vector3 i = floor(p);
         Vector3 f = frac(p);
@@ -70,7 +70,7 @@ public static class ShaderFunctions
     }
 
     // Classic Perlin noise, periodic variant
-    static float PeriodicNoise(Vector3 p, Vector3 rep)
+    public static float PeriodicNoise(Vector3 p, Vector3 rep)
     {
         Vector3 i0 = wglnoise_mod(floor(p), rep);
         Vector3 i1 = wglnoise_mod(i0 + Vector3.one, rep);
@@ -78,7 +78,7 @@ public static class ShaderFunctions
         return ClassicNoise_impl(i0, f, i1, f - Vector3.one);
     }
 
-    static Vector3 frac(Vector3 val)
+    public static Vector3 frac(Vector3 val)
     {
         return new Vector3(val.x % 1f, val.y % 1f, val.z % 1f);
     }
