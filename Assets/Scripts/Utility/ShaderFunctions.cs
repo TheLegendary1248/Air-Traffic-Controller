@@ -19,21 +19,21 @@ public static class ShaderFunctions
         Vector4 ixy0 = wglnoise_permute(ixy + iz0);
         Vector4 ixy1 = wglnoise_permute(ixy + iz1);
 
-        Vector4 gx0 = lerp4(-Vector4.one, Vector4.one, frac(floor(ixy0 / 7) / 7));
-        Vector4 gy0 = lerp4(-Vector4.one, Vector4.one, frac(floor(ixy0 % 7) / 7));
+        Vector4 gx0 = lerp4(-Vector4.one, Vector4.one, frac(floor(ixy0 / 7f) / 7f));
+        Vector4 gy0 = lerp4(-Vector4.one, Vector4.one, frac(floor(mod(ixy0, 7f)) / 7f));
         Vector4 gz0 = Vector4.one - gx0.Abs() - gy0.Abs();
 
-        bool4 zn0 = gz0 < -0.01f;
-        gx0 += zn0 * (gx0 < -0.01f ? 1 : -1);
-        gy0 += zn0 * (gy0 < -0.01f ? 1 : -1);
+        Vector4 zn0 = compare(gz0, -0.01f, 1, 0);
+        gx0 += mul4(zn0, compare(gx0, -0.01f, 1, -1));
+        gy0 += mul4(zn0, compare(gy0, -0.01f, 1, -1));
 
         Vector4 gx1 = lerp4(-Vector4.one, Vector4.one, frac(floor(ixy1 / 7) / 7));
-        Vector4 gy1 = lerp4(-Vector4.one, Vector4.one, frac(floor(ixy1 % 7) / 7));
+        Vector4 gy1 = lerp4(-Vector4.one, Vector4.one, frac(floor(mod(ixy1, 7)) / 7));
         Vector4 gz1 = Vector4.one - gx1.Abs() - gy1.Abs();
 
-        bool4 zn1 = gz1 < -0.01f;
-        gx1 += zn1 * (gx1 < -0.01f ? 1 : -1);
-        gy1 += zn1 * (gy1 < -0.01f ? 1 : -1);
+        Vector4 zn1 = compare(gz1, -0.01f, 1, 0);
+        gx1 += mul4(zn1, compare(gx1, -0.01f, 1, -1));
+        gy1 += mul4(zn1, compare(gy1, -0.01f, 1, -1));
 
         Vector3 g000 = Vector3.Normalize(new Vector3(gx0.x, gy0.x, gz0.x));
         Vector3 g100 = Vector3.Normalize(new Vector3(gx0.y, gy0.y, gz0.y));
@@ -176,6 +176,15 @@ public static class ShaderFunctions
     public static Vector2 vec2(float a) => new Vector2(a, a);
     public static Vector3 vec3(float a) => new Vector3(a, a, a);
     public static Vector4 vec4(float a) => new Vector4(a, a, a, a);
+    public static Vector2 mod(Vector2 a, float b) => new Vector2(a.x % b, a.y % b);
+    public static Vector3 mod(Vector3 a, float b) => new Vector3(a.x % b, a.y % b, a.z % b);
+    public static Vector4 mod(Vector4 a, float b) => new Vector4(a.x % b, a.y % b, a.z % b, a.w % b);
+    public static Vector2 mod(Vector2 a, Vector2 b) => new Vector2(a.x % b.x, a.y % b.y);
+    public static Vector3 mod(Vector3 a, Vector3 b) => new Vector3(a.x % b.x, a.y % b.y, a.z % b.z);
+    public static Vector4 mod(Vector4 a, Vector4 b) => new Vector4(a.x % b.x, a.y % b.y, a.z % b.z, a.w % b.w);
+    //no, don't bother me about it
+    public static Vector4 compare(Vector4 a, float b, float t, float f) =>
+        new Vector4(a.x < b ? t : f, a.y < b ? t : f, a.z < b ? t : f, a.w < b ? t : f);
 }
 public static class VectorExt
 {
@@ -200,9 +209,9 @@ public struct bool4
         this.z = z;
         this.w = w;
     }
-    /*
+    /*One of the parameters must have the containing type...
     public static bool4 operator < (Vector4 a, float b) 
         => new bool4(a.x < b, a.y < b, a.z < b, a.w < b);
     public static bool4 operator >(Vector4 a, float b)
-        => new bool4(a.x > b, a.y > b, a.z > b, a.w > b); */
+        => new bool4(a.x > b, a.y > b, a.z > b, a.w > b);*/
 }
