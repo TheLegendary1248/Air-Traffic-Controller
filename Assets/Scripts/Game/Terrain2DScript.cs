@@ -11,6 +11,8 @@ public class Terrain2DScript : MonoBehaviour
     void Start()
     {
         spriteRend.sprite = Sprite.Create(GradientToTex(primaryGradient,2560), Rect.MinMaxRect(0,0,1,1), Vector2.zero);
+
+
     }
 
     // Update is called once per frame

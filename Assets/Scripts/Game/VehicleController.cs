@@ -16,7 +16,7 @@ public class VehicleController : MonoBehaviour
 
     void Update()
     {
-        if()
+        if(true)
         {
 
         }
