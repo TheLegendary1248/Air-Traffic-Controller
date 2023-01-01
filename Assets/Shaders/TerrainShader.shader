@@ -53,7 +53,7 @@ Shader "Unlit/TerrainShader"
                 // sample the texture
                 
                 float3 spot = float3(i.uv.x, i.uv.y, 1) + _Offset;
-                float val = lerp(0.5,1,ClassicNoise(spot));
+                float val = lerp(0,1,ClassicNoise(spot));
                 fixed4 col = tex2D(_MainTex, val);
                 // apply fog
                 // UNITY_APPLY_FOG(i.fogCoord, col);

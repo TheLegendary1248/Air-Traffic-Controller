@@ -7,21 +7,25 @@ public static class ShaderFunctions
 {
     public static float ClassicNoise_impl(Vector3 pi0, Vector3 pf0, Vector3 pi1, Vector3 pf1)
     {
+        //Checked
         pi0 = wglnoise_mod289(pi0);
         pi1 = wglnoise_mod289(pi1);
 
+        //Checked
         Vector4 ix = new Vector4(pi0.x, pi1.x, pi0.x, pi1.x);
         Vector4 iy = new Vector4(pi0.y, pi0.y, pi1.y, pi1.y);
-        Vector4 iz0 = Vector4.one * pi0.z;
-        Vector4 iz1 = Vector4.one * pi1.z;
+        Vector4 iz0 = vec4(pi0.z);
+        Vector4 iz1 = vec4(pi1.z);
 
+        //SUS
         Vector4 ixy = wglnoise_permute(wglnoise_permute(ix) + iy);
         Vector4 ixy0 = wglnoise_permute(ixy + iz0);
         Vector4 ixy1 = wglnoise_permute(ixy + iz1);
 
+
         Vector4 gx0 = lerp4(-Vector4.one, Vector4.one, frac(floor(ixy0 / 7f) / 7f));
         Vector4 gy0 = lerp4(-Vector4.one, Vector4.one, frac(floor(mod(ixy0, 7f)) / 7f));
-        Vector4 gz0 = Vector4.one - gx0.Abs() - gy0.Abs();
+        Vector4 gz0 = vec4(1f) - gx0.Abs() - gy0.Abs();
 
         Vector4 zn0 = compare(gz0, -0.01f, 1, 0);
         gx0 += mul4(zn0, compare(gx0, -0.01f, 1, -1));
@@ -35,6 +39,7 @@ public static class ShaderFunctions
         gx1 += mul4(zn1, compare(gx1, -0.01f, 1, -1));
         gy1 += mul4(zn1, compare(gy1, -0.01f, 1, -1));
 
+        //Pretty sure this works
         Vector3 g000 = Vector3.Normalize(new Vector3(gx0.x, gy0.x, gz0.x));
         Vector3 g100 = Vector3.Normalize(new Vector3(gx0.y, gy0.y, gz0.y));
         Vector3 g010 = Vector3.Normalize(new Vector3(gx0.z, gy0.z, gz0.z));
@@ -44,6 +49,7 @@ public static class ShaderFunctions
         Vector3 g011 = Vector3.Normalize(new Vector3(gx1.z, gy1.z, gz1.z));
         Vector3 g111 = Vector3.Normalize(new Vector3(gx1.w, gy1.w, gz1.w));
 
+        //Pretty sure this works too
         float n000 = Vector3.Dot(g000, pf0);
         float n100 = Vector3.Dot(g100, new Vector3(pf1.x, pf0.y, pf0.z));
         float n010 = Vector3.Dot(g010, new Vector3(pf0.x, pf1.y, pf0.z));
@@ -79,83 +85,55 @@ public static class ShaderFunctions
     }
 
     public static Vector3 frac(Vector3 val)
-    {
-        return new Vector3(val.x % 1f, val.y % 1f, val.z % 1f);
-    }
-    #region VectorFloor
-    static Vector2 floor(Vector2 val)
-    {
-        return new Vector2(Mathf.Floor(val.x), Mathf.Floor(val.y));
-    }
-    static Vector3 floor(Vector3 val)
-    {
-        return new Vector3(Mathf.Floor(val.x), Mathf.Floor(val.y), Mathf.Floor(val.z));
-    }
-    static Vector4 floor(Vector4 val)
-    {
-        return new Vector4(Mathf.Floor(val.x), Mathf.Floor(val.y), Mathf.Floor(val.z), Mathf.Floor(val.w));
-    }
-    #endregion
-    static float wglnoise_mod(float x, float y)
-    {
-        return x - y * Mathf.Floor(x / y);
-    }
+    => new Vector3(val.x - Mathf.Floor(val.x), val.y - Mathf.Floor(val.y), val.z - Mathf.Floor(val.z));
 
-    static Vector2 wglnoise_mod(Vector2 x, Vector2 y)
-    {
-        return x - y * floor(x / y);
-    }
+    public static Vector4 frac(Vector4 val)
+    => new Vector4(val.x - Mathf.Floor(val.x), val.y - Mathf.Floor(val.y), val.z - Mathf.Floor(val.z), val.w - Mathf.Floor(val.w));
+    #region VectorFloor
+    public static Vector2 floor(Vector2 val)
+    => new Vector2(Mathf.Floor(val.x), Mathf.Floor(val.y));
+    public static Vector3 floor(Vector3 val)
+    => new Vector3(Mathf.Floor(val.x), Mathf.Floor(val.y), Mathf.Floor(val.z));
+    public static Vector4 floor(Vector4 val)
+    => new Vector4(Mathf.Floor(val.x), Mathf.Floor(val.y), Mathf.Floor(val.z), Mathf.Floor(val.w));
+    #endregion
+    static float wglnoise_mod(float x, float y) 
+        => x - y * Mathf.Floor(x / y);
+
+    static Vector2 wglnoise_mod(Vector2 x, Vector2 y) 
+        => x - y * floor(x / y);
 
     static Vector3 wglnoise_mod(Vector3 x, Vector3 y)
-    {
-        return x - mul3(y, floor(div3(x, y)));
-    }
+        => x - mul3(y, floor(div3(x, y)));
 
     static Vector4 wglnoise_mod(Vector4 x, Vector4 y)
-    {
-        return x - mul4(y, floor(div4(x, y)));
-    }
+        => x - mul4(y, floor(div4(x, y)));
 
     static Vector2 wglnoise_fade(Vector2 t)
-    {
-        return t * t * t * (t * (t * 6f - vec2(15f)) + vec2(10f));
-    }
+        => t * t * t * (t * (t * 6f - vec2(15f)) + vec2(10f));
 
     static Vector3 wglnoise_fade(Vector3 t)
-    {
-        return mul3(mul3(mul3(t, t), t), mul3(t, t * 6f - vec3(15f)) + vec3(10f));
-    }
+        => mul3(mul3(mul3(t, t), t), mul3(t, t * 6f - vec3(15f)) + vec3(10f));
 
     static float wglnoise_mod289(float x)
-    {
-        return x - Mathf.Floor(x / 289f) * 289f;
-    }
-
+        => x - Mathf.Floor(x / 289f) * 289f;
     static Vector2 wglnoise_mod289(Vector2 x)
-    {
-        return x - floor(x / 289f) * 289f;
-    }
+        => x - floor(x / 289f) * 289f;
+    static Vector3 wglnoise_mod289(Vector3 x) 
+        => x - floor(x / 289f) * 289f;
 
-    static Vector3 wglnoise_mod289(Vector3 x)
-    {
-        return x - floor(x / 289f) * 289f;
-    }
-
-    static Vector4 wglnoise_mod289(Vector4 x)
-    {
-        return x - floor(x / 289f) * 289f;
-    }
-
+    static Vector4 wglnoise_mod289(Vector4 x) 
+        => x - floor(x / 289f) * 289f;
     static Vector3 wglnoise_permute(Vector3 x)
     {
-        Vector3 m = x * 34 + Vector3.one;
+        Vector3 m = x * 34f + vec3(1f);
         m.Scale(x);
         return wglnoise_mod289(m);
     }
 
     static Vector4 wglnoise_permute(Vector4 x)
     {
-        Vector4 m = x * 34 + Vector4.one;
+        Vector4 m = x * 34f + vec4(1f);
         m.Scale(x);
         return wglnoise_mod289(m);
     }
@@ -193,7 +171,7 @@ public static class VectorExt
     public static Vector4 Mod (this Vector4 vec, float a) 
         => new Vector4(vec.x % a, vec.y % a, vec.z % a, vec.w % a);
     public static Vector4 Abs(this Vector4 vec) 
-        => new Vector4(Mathf.Abs(vec.x), Mathf.Abs(vec.y), Mathf.Abs(vec.z), Mathf.Abs(vec.z));
+        => new Vector4(Mathf.Abs(vec.x), Mathf.Abs(vec.y), Mathf.Abs(vec.z), Mathf.Abs(vec.w));
     
 }
 public struct bool4

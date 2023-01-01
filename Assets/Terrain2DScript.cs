@@ -10,7 +10,7 @@ public class Terrain2DScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spriteRend.sprite = Sprite.Create(GradientToTex(primaryGradient,256), Rect.MinMaxRect(0,0,1,1), Vector2.zero);
+        spriteRend.sprite = Sprite.Create(GradientToTex(primaryGradient,256), Rect.MinMaxRect(0,0,1,1), Vector2.one);
     }
 
     // Update is called once per frame
