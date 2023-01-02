@@ -6,14 +6,17 @@ public class Terrain2DScript : MonoBehaviour
 {
     public Gradient primaryGradient;
     public Gradient secondaryGradient;
-    public MeshFilter meshFilter;
-    public MeshRenderer meshRend;
+    public MeshFilter landMFil;
+    public MeshRenderer landMRend;
+    public MeshFilter waterMFil;
+    public Material mat;
     // Start is called before the first frame update
     void Start()
     {
         Texture2D tex = GradientToTex(primaryGradient,256);
-        meshFilter.mesh = CreatePlane(new Vector2Int(100, 100));
-        
+        landMFil.mesh = CreatePlane(new Vector2Int(50, 50));
+        landMRend.material.SetTexture("_MainTex", tex);
+        waterMFil.mesh = CreatePlane(new Vector2Int(1, 1));
     }
 
     Mesh CreatePlane(Vector2Int size)

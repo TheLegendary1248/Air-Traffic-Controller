@@ -5,6 +5,7 @@ Shader "Unlit/TerrainShader"
         _MainTex ("Texture", 2D) = "white" {}
         _Offset ("Offset", Vector) = (0,0,0)
         _Height ("Height", float) = 10
+        _Slope ("Slope",float) = 4
     }
     SubShader
     {
@@ -41,6 +42,7 @@ Shader "Unlit/TerrainShader"
             float4 _MainTex_ST;
             half3 _Offset;
             float _Height;
+            fixed _Slope;
 
             v2f vert (appdata v)
             {
@@ -48,11 +50,10 @@ Shader "Unlit/TerrainShader"
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
                 float4 vert = v.vertex;
-                vert.y += 
-                    _Height * 
-                    ClassicNoise(
-                        _Offset + float3(o.uv.x * _MainTex_TexelSize.z, o.uv.y * _MainTex_TexelSize.w ,0)
-                    );
+                float noise = abs(ClassicNoise(_Offset + float3(o.uv.x, o.uv.y, 0)));
+                float sloped = pow(noise, _Slope);
+
+                vert.y += _Height * sloped;
                 o.vertex = UnityObjectToClipPos(vert);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
@@ -62,7 +63,7 @@ Shader "Unlit/TerrainShader"
             {
                 // sample the texture
                 
-                float3 spot = float3(i.uv.x * _MainTex_TexelSize.z, i.uv.y * _MainTex_TexelSize.w, 0) + _Offset;
+                float3 spot = float3(i.uv.x , i.uv.y, 0) + _Offset;
                 float val = lerp(0.5,1,ClassicNoise(spot));
                 fixed4 col = tex2D(_MainTex, val);
                 // apply fog
