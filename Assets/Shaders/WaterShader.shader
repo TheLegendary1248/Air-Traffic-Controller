@@ -1,11 +1,15 @@
-Shader "Unlit/TerrainShader"
+Shader "Unlit/WaterShader"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _Offset ("Offset", Vector) = (0,0,0)
-        _Height ("Height", float) = 10
-        _Slope ("Slope",float) = 4
+        _MainTex("Texture", 2D) = "white" {}
+        _Color("Color", Color) = (0,0.5,1)
+        _FoamColor("Color", Color) = (0.4,0.8,1)
+        _Offset("Offset", Vector) = (0,0,0)
+        _Height("Height", float) = 10
+        _Slope("Slope",float) = 4
+        _Cutoff("Cutoff", float) = 0.1
+        _Thresh("Threshold", float) = 0.01
     }
     SubShader
     {
@@ -37,11 +41,14 @@ Shader "Unlit/TerrainShader"
             };
 
             sampler2D _MainTex;
-            float4 _MainTex_TexelSize;
             float4 _MainTex_ST;
             half3 _Offset;
             float _Height;
+            float _Cutoff;
             fixed _Slope;
+            float4 _Color;
+            float4 _FoamColor;
+            float _Thresh;
 
             v2f vert (appdata v)
             {
@@ -49,7 +56,7 @@ Shader "Unlit/TerrainShader"
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
                 float4 vert = v.vertex;
-                float noise = abs(ClassicNoise(_Offset + float3(o.uv.x, o.uv.y, 0)));
+                float noise = abs(_Cutoff);
                 float sloped = pow(noise, _Slope);
 
                 vert.y += _Height * sloped;
@@ -58,15 +65,15 @@ Shader "Unlit/TerrainShader"
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_Target
+            fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                
                 float3 spot = float3(i.uv.x , i.uv.y, 0) + _Offset;
-                float val = lerp(0.5,1,ClassicNoise(spot));
-                fixed4 col = tex2D(_MainTex, val);
+                float noise = abs(ClassicNoise(spot));
+                bool val = noise > _Cutoff - _Thresh;
+                fixed4 col = val ? _FoamColor : _Color;
                 // apply fog
-                // UNITY_APPLY_FOG(i.fogCoord, col);
+                //UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
             ENDCG
