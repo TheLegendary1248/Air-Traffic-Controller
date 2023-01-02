@@ -4,6 +4,7 @@ Shader "Unlit/TerrainShader"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Offset ("Offset", Vector) = (0,0,0)
+        _Height ("Height", float) = 10
     }
     SubShader
     {
@@ -39,12 +40,20 @@ Shader "Unlit/TerrainShader"
             float4 _MainTex_TexelSize;
             float4 _MainTex_ST;
             half3 _Offset;
+            float _Height;
 
             v2f vert (appdata v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+
+                float4 vert = v.vertex;
+                vert.y += 
+                    _Height * 
+                    ClassicNoise(
+                        _Offset + float3(o.uv.x * _MainTex_TexelSize.z, o.uv.y * _MainTex_TexelSize.w ,0)
+                    );
+                o.vertex = UnityObjectToClipPos(vert);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
