@@ -52,6 +52,7 @@ Shader "Unlit/WaterShader"
 
             v2f vert (appdata v)
             {
+                _Cutoff *= 0.01;
                 v2f o;
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
@@ -68,10 +69,14 @@ Shader "Unlit/WaterShader"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
+                _Thresh *= 0.001;
+                _Cutoff *= 0.01;
                 float3 spot = float3(i.uv.x , i.uv.y, 0) + _Offset;
                 float noise = abs(ClassicNoise(spot));
-                bool val = noise > _Cutoff - _Thresh;
-                fixed4 col = val ? _FoamColor : _Color;
+                float movement = (sin(i.uv.x * 15 + _Time.y) * 0.01);
+                bool val = noise < _Cutoff - _Thresh + movement;
+                val = val && (0.2 * noise) < ((noise + _Cutoff + -_Thresh + movement + (_Time.x * 0.2)) % 0.04);
+                fixed4 col = val ? _Color : lerp(_Color,_FoamColor,noise * 4);
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
