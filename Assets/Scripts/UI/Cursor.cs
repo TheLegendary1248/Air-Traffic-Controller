@@ -27,10 +27,12 @@ public class Cursor : MonoBehaviour
             out movePos);
         transform.position = parentCanvas.transform.TransformPoint(movePos);
         //Calculate terrain height position
-        Vector2 pos = _.WorldPoint();
+        Vector2 pos = 
+            _.ToTerrainCoord(_.WorldPoint());
+            _.WorldPoint();
         
         //Debug.Log(pos);
-        text.text = $"X: {pos.x}\nY: {pos.y}\n{ShaderFunctions.ClassicNoise(pos)}";
+        text.text = $"X: {pos.x}\nZ: {pos.y}\n{ShaderFunctions.ClassicNoise(pos)}";
         
     }
 }

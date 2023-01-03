@@ -71,7 +71,7 @@ Shader "Unlit/WaterShader"
                 // sample the texture
                 _Thresh *= 0.001;
                 _Cutoff *= 0.01;
-                float3 spot = float3(i.uv.x , i.uv.y, _Time.x) + _Offset;
+                float3 spot = float3(i.uv.x , i.uv.y, 0) + _Offset;
                 float noise = abs(ClassicNoise(spot));
                 float movement = (sin(i.uv.x * 15 + _Time.y) * 0.01);
                 clip((noise < _Cutoff) - 1);

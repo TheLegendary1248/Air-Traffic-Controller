@@ -51,7 +51,7 @@ Shader "Unlit/TerrainShader"
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
                 float4 vert = v.vertex;
-                float noise = abs(ClassicNoise(_Offset + float3(o.uv.x, o.uv.y, _Time.x)));
+                float noise = abs(ClassicNoise(_Offset + float3(o.uv.x, o.uv.y, 0)));
                 float sloped = pow(noise, _Slope);
 
                 vert.y += _Height * sloped;
@@ -64,7 +64,7 @@ Shader "Unlit/TerrainShader"
             {
                 // sample the texture
                 
-                float3 spot = float3(i.uv.x , i.uv.y, _Time.x) + _Offset;
+                float3 spot = float3(i.uv.x , i.uv.y, 0) + _Offset;
                 float val = lerp(0.5,1,ClassicNoise(spot));
                 
                 fixed4 col = tex2D(_MainTex, val);
