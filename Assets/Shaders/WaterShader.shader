@@ -74,6 +74,7 @@ Shader "Unlit/WaterShader"
                 float3 spot = float3(i.uv.x , i.uv.y, _Time.x) + _Offset;
                 float noise = abs(ClassicNoise(spot));
                 float movement = (sin(i.uv.x * 15 + _Time.y) * 0.01);
+                clip((noise < _Cutoff) - 1);
                 bool val = noise < _Cutoff - _Thresh + movement;
                 val = val && (0.2 * noise) < ((noise + _Cutoff + -_Thresh + movement + (_Time.x * 0.2)) % 0.06);
                 fixed4 col = val ? _Color : lerp(_Color,_FoamColor,noise * 4);

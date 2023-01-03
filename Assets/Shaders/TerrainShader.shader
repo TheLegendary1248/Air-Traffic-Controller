@@ -3,15 +3,17 @@ Shader "Unlit/TerrainShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _DiffTex("Texture", 2D) = "black" {}
         _Offset ("Offset", Vector) = (0,0,0)
         _Height ("Height", float) = 10
         _Slope ("Slope",float) = 4
+        _BaseColor ("Color", Color) = (0,0,0)
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
-
+        Cull Off
         Pass
         {
             CGPROGRAM
@@ -64,7 +66,9 @@ Shader "Unlit/TerrainShader"
                 
                 float3 spot = float3(i.uv.x , i.uv.y, _Time.x) + _Offset;
                 float val = lerp(0.5,1,ClassicNoise(spot));
+                
                 fixed4 col = tex2D(_MainTex, val);
+                col = lerp(0,col,i.uv.y % 0.2 > 0.1 ? 1 : 0.9);
                 // apply fog
                 // UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

@@ -14,7 +14,7 @@ public class ControlledVehicle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.eulerAngles = _.Angle(0f); 
+
     }
     private void FixedUpdate()
     {

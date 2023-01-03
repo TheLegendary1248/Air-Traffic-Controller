@@ -27,7 +27,8 @@ public class Cursor : MonoBehaviour
             out movePos);
         transform.position = parentCanvas.transform.TransformPoint(movePos);
         //Calculate terrain height position
-        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pos = _.WorldPoint();
+        
         //Debug.Log(pos);
         text.text = $"X: {pos.x}\nY: {pos.y}\n{ShaderFunctions.ClassicNoise(pos)}";
         
