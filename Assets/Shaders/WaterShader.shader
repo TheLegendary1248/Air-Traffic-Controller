@@ -3,9 +3,10 @@ Shader "Unlit/WaterShader"
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
+        _DiffTex("Modif Texture", 2D) = "" {}
         _Color("Color", Color) = (0,0.5,1)
         _FoamColor("Color", Color) = (0.4,0.8,1)
-        _Offset("Offset", Vector) = (0,0,0)
+        _ZOffset("Z Offset", float) = 0
         _Height("Height", float) = 10
         _Slope("Slope",float) = 4
         _Cutoff("Cutoff", float) = 0.1
@@ -41,8 +42,9 @@ Shader "Unlit/WaterShader"
             };
 
             sampler2D _MainTex;
+            sampler2D _DiffTex;
             float4 _MainTex_ST;
-            half3 _Offset;
+            float _ZOffset;
             float _Height;
             float _Cutoff;
             fixed _Slope;
@@ -71,7 +73,7 @@ Shader "Unlit/WaterShader"
                 // sample the texture
                 _Thresh *= 0.001;
                 _Cutoff *= 0.01;
-                float3 spot = float3(i.uv.x , i.uv.y, 0) + _Offset;
+                float3 spot = float3(i.uv.xy, _ZOffset);
                 float noise = abs(ClassicNoise(spot));
                 float movement = (sin(i.uv.x * 15 + _Time.y) * 0.01);
                 clip((noise < _Cutoff) - 1);

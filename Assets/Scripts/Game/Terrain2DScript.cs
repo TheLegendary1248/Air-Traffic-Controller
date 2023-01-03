@@ -9,13 +9,19 @@ public class Terrain2DScript : MonoBehaviour
     public MeshFilter landMFil;
     public MeshRenderer landMRend;
     public MeshFilter waterMFil;
-    public Material mat;
+    public MeshRenderer waterMRend;
+    Material landMat;
+    Material waterMat;
     // Start is called before the first frame update
     void Start()
     {
+        //Instance each material to the renderer
+        landMat = landMRend.material;
+        waterMat = waterMRend.material;
+        //Other stuff
         Texture2D tex = GradientToTex(primaryGradient,256);
         landMFil.mesh = CreatePlane(new Vector2Int(250, 250));
-        landMRend.material.SetTexture("_MainTex", tex);
+        landMat.SetTexture("_MainTex", tex);
         waterMFil.mesh = CreatePlane(new Vector2Int(1, 1));
     }
 
@@ -57,6 +63,11 @@ public class Terrain2DScript : MonoBehaviour
     void Update()
     {
         
+    }
+    private void FixedUpdate()
+    {
+        landMat.SetFloat("_ZOffset", Time.time / 35f);
+        waterMat.SetFloat("_ZOffset", Time.time / 35f);
     }
     /// <summary>
     /// Creates a one pixel high texture gradient for the shader
