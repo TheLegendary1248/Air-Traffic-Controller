@@ -23,6 +23,6 @@ public class TrafficSpawner : MonoBehaviour
         Vector2 v = Random.insideUnitCircle;
         v.Normalize(); v *= 100;
         float angle = Vector2.SignedAngle(Vector2.down, v);
-        GameObject gb = Instantiate(plane, new Vector3(v.x,70f + v.y,-4.5f), Quaternion.Euler(0,0,angle));
+        GameObject gb = Instantiate(plane, new Vector3(v.x,70f + v.y,-3f), Quaternion.Euler(0,0,angle));
     }
 }

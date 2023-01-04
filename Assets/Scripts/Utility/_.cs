@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public static class _
 {
-    static Plane worldPlane = new Plane(Vector3.forward, 0);
+    static Plane worldPlane = new Plane(Vector3.forward, 3f);
     /// <summary>
     /// Creates a Vector representing top down angle for eulerAngles
     /// </summary>
@@ -21,10 +21,7 @@ public static class _
     public static Vector2 WorldPoint(Ray r)
     {
         float distance; Vector3 worldPosition = Vector2.zero;
-        if (worldPlane.Raycast(r, out distance))
-        {
-            worldPosition = r.GetPoint(distance);
-        }
+        if (worldPlane.Raycast(r, out distance)) worldPosition = r.GetPoint(distance);
         return worldPosition;
     }
 
