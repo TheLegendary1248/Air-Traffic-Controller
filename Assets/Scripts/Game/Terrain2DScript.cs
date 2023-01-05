@@ -33,9 +33,6 @@ public class Terrain2DScript : MonoBehaviour
         Vector3[] verts = new Vector3[vx * vz];
         Vector2[] uv = new Vector2[vx * vz];
         int[] tris = new int[size.x * size.y * 2 * 3];
-        Debug.Log($"Vertices : {verts.Length}");
-        Debug.Log($"Tris : {tris.Length / 3}");
-        
         //Create Verts
         for (int x = 0; x <= size.x; x++)
         {

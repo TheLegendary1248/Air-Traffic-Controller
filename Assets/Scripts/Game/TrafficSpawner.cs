@@ -16,7 +16,7 @@ public class TrafficSpawner : MonoBehaviour
     {
         SpawnPlane();
         yield return new WaitForSeconds(time);
-        timer = StartCoroutine(Wave(3f));
+        timer = StartCoroutine(Wave(5f));
     }
     void SpawnPlane()
     {

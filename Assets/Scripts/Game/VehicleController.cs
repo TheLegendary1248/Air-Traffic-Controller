@@ -17,11 +17,20 @@ public class VehicleController : MonoBehaviour
     //Functions of the controller for the player
     void Update()
     {
-        //Click down
-        if(Input.GetMouseButtonDown(0))
+        //Click
+        Vector2 pt = _.WorldPoint();
+        if (vehicles.Count == 0) return; //If there are no vehicles, then this class has no function anyways
+        ControlledVehicle c = GetNearestVehicle(pt);
+        Debug.DrawLine(c.transform.position, (Vector3)pt + new Vector3(0f,0f,-3f), Color.red);
+        for (int i = 0; i < c.path.pts.Count - 1; i++)
         {
-            Vector2 pt = _.WorldPoint();
-            GetNearestVehicle(pt).GoToPoint(pt);
+            Debug.DrawLine((Vector3)c.path.pts[i] + new Vector3(0f, 0f, -3f), (Vector3)c.path.pts[i + 1] + new Vector3(0f, 0f, -3f));
+        }
+
+
+        if(Input.GetMouseButton(0))
+        {
+            c.path.AppendPath(pt);
         }
     }
     public void AddVehicle(ControlledVehicle v)
