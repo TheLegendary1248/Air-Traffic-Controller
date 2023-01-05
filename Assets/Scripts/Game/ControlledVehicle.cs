@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 /// <summary>
 /// Base class for all controllable vehicles
 /// </summary>
@@ -20,6 +21,8 @@ public class ControlledVehicle : MonoBehaviour
     public float turn = 0f;
     public Rigidbody2D rb;
     public Path path = new Path();
+    public GameObject cosmetic;
+    public LineRenderer line;
     /// <summary>
     /// The turning rate of the vehicle over a second
     /// </summary>    
@@ -27,6 +30,8 @@ public class ControlledVehicle : MonoBehaviour
     public void Start()
     {
         VehicleController.Main.AddVehicle(this);
+        path.line = line;
+        path.threshold = speed;
     }
     public void OnDestroy()
     {
@@ -36,10 +41,8 @@ public class ControlledVehicle : MonoBehaviour
     {
         Vector2 v = Vector2.zero;
         //Follow path
-        if(path.CheckPoint(transform.position, transform.forward, out v))
+        if(path.CheckPoint(transform.position, transform.up, out v))
         {
-            
-
             float timeToStop = Mathf.Abs(turn) / turnrate;
             float angleToPt = Vector2.SignedAngle(v - (Vector2)transform.position, transform.up);
 
@@ -56,7 +59,9 @@ public class ControlledVehicle : MonoBehaviour
                     ;
             turn -= turndir;
             Debug.DrawRay(transform.position, transform.right * Mathf.Sign(turndir), Color.cyan);
+            Debug.DrawLine(transform.position, (Vector3)v + new Vector3(0,0, -3f), Color.red);
             turn = Mathf.Clamp(turn, -maxturn, maxturn);
+
         }
         //Else if we're still turning, stop turning
         else if(turn != 0)
@@ -67,7 +72,9 @@ public class ControlledVehicle : MonoBehaviour
         }
         transform.eulerAngles = _.Angle(transform.eulerAngles.z + (turn * Time.fixedDeltaTime));
         transform.Translate(Vector2.up * speed * Time.fixedDeltaTime, Space.Self);
-    }
+
+        if(cosmetic) cosmetic.transform.localEulerAngles = new Vector2(-90f, turn * 3f / speed);
+}
 }
 /// <summary>
 /// Object for keeping tracking of points
@@ -75,7 +82,8 @@ public class ControlledVehicle : MonoBehaviour
 public class Path
 {
     public List<Vector2> pts = new List<Vector2>();
-    public float threshold = 2f;
+    public float threshold = 4f;
+    public LineRenderer line;
     
     /// <summary>
     /// Get's the closest defined path point
@@ -105,8 +113,33 @@ public class Path
     /// <param name="vec"></param>
     public void AppendPath(Vector2 vec)
     {
-        pts.Add(vec);
+        if (pts.Count == 0 || (pts[pts.Count - 1] - vec).sqrMagnitude > 0.2f)
+        {
+            
+            pts.Add(vec);
+            
+            if (line) { line.positionCount = pts.Count; line.SetPositions(Array.ConvertAll(pts.ToArray(), i => new Vector3(i.x, i.y, -3f))); }
+        }
     }
+    void SetLine()
+    {
+        if (line)
+        {
+            if (line.positionCount != 0)
+            {
+                Vector2 start = line.GetPosition(0);
+                line.positionCount = pts.Count;
+                Vector3[] arr = new Vector3[pts.Count + 1];
+                Array.ConvertAll(pts.ToArray(), i => new Vector3(i.x, i.y, -3f)).CopyTo(arr, 1);
+                arr[0] = start; //Set follower point
+                line.SetPositions(arr); //Set line
+            }
+        }
+    }
+    /// <summary>
+    /// Updates the first point in the given line renderer to match the follower
+    /// </summary>
+    public void UpdateFollowerPoint(Vector2 pos) { if (line && line.positionCount != 0) line.SetPosition(0, new Vector3(pos.x, pos.y, -3f)); }
     /// <summary>
     /// 
     /// </summary>
@@ -116,24 +149,26 @@ public class Path
     {
         //Check each point
         int i;
+        int b = 0;
         for (i = 0; i < pts.Count; i++)
         {
-            Vector2 dif = pos - pts[i];
             Vector2 pt = pts[i];
+            Vector2 dif = pos - pt;
             //If the point is close enough
             if (dif.sqrMagnitude < threshold * threshold)
             {
                 //If the point is behind the object
-                if (Vector2.Dot(dir, pos - pt) < 0) 
-                {
-                    continue;
-                }
+                if (Vector2.Dot(dir, pos - pt) > 0.75f) b = i + 1;
+                continue;
             }
             break;
         }
-        pts.RemoveRange(0, i);
-        if (pts.Count != 0) next = pts[0];
+        if (pts.Count != 0) next = pts[Mathf.Min(i, pts.Count - 1)];
         else next = pos + dir; //Point ahead the given position anyways for convenience
+        //Remove past points
+        pts.RemoveRange(0, b);
+        SetLine();
+        UpdateFollowerPoint(pos);
         return pts.Count != 0;
     }
 }

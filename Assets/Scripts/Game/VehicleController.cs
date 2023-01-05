@@ -9,6 +9,7 @@ public class VehicleController : MonoBehaviour
 {
     public List<ControlledVehicle> vehicles = new List<ControlledVehicle>();
     public static VehicleController Main;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +27,6 @@ public class VehicleController : MonoBehaviour
         {
             Debug.DrawLine((Vector3)c.path.pts[i] + new Vector3(0f, 0f, -3f), (Vector3)c.path.pts[i + 1] + new Vector3(0f, 0f, -3f));
         }
-
 
         if(Input.GetMouseButton(0))
         {
