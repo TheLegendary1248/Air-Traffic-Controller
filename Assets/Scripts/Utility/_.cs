@@ -25,11 +25,5 @@ public static class _
         return worldPosition;
     }
 
-    //Precalc for rotation transformation in the next function
-    static float sin45 = Mathf.Sin(Mathf.Deg2Rad * -45f);
-    static float cos45 = Mathf.Cos(Mathf.Deg2Rad * -45f);
-    /// <summary>
-    /// Gets the 'terrain' coordinates from world coordinates to match with the shader noise
-    /// </summary>
-    public static Vector2 ToTerrainCoord(Vector2 vec) => new Vector2((vec.x * cos45) - (vec.y * sin45), (vec.x * sin45) + (vec.y * cos45));
+    
 }

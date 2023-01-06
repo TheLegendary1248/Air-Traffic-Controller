@@ -23,6 +23,7 @@ public class ControlledVehicle : MonoBehaviour
     public Path path = new Path();
     public GameObject cosmetic;
     public LineRenderer line;
+    public GameObject deathFX;
     /// <summary>
     /// The turning rate of the vehicle over a second
     /// </summary>    
@@ -39,6 +40,19 @@ public class ControlledVehicle : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        //Check plane has not hit something
+        float terra = 0;
+        if (World.Main.GetTerrainHeight(transform.position, out terra))
+        {
+            Debug.DrawLine(transform.position, transform.position + new Vector3(0f, 0f, terra * 10f), Color.blue);
+            if (terra > -transform.position.z)
+            {
+                Destroy(gameObject);
+                Instantiate(deathFX, transform.position, transform.rotation);
+            }
+            
+        }
+        
         Vector2 v = Vector2.zero;
         //Follow path
         if(path.CheckPoint(transform.position, transform.up, out v))
@@ -78,6 +92,11 @@ public class ControlledVehicle : MonoBehaviour
     public void Dock(float targetAngle, float landHeight, Vector2 targetSpot)
     {
         
+    }
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        Instantiate(deathFX, transform.position, transform.rotation);
+        Destroy(gameObject);
     }
 }
 /// <summary>

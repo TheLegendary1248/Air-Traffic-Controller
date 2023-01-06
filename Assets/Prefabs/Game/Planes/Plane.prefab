@@ -48,13 +48,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 348ff9607b1256b409deef5693158a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
-  maxturn: 100
+  speed: 5
+  maxturn: 80
   turn: 0
   rb: {fileID: 0}
   cosmetic: {fileID: 4467570121215750196}
   line: {fileID: 4499740773407139668}
-  turnrate: 60
+  deathFX: {fileID: 6727197536472130973, guid: db1409ad3e8c9974e809012e3affebff, type: 3}
+  turnrate: 45
 --- !u!120 &4499740773407139668
 LineRenderer:
   m_ObjectHideFlags: 0
