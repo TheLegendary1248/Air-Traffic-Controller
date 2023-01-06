@@ -22,6 +22,11 @@ public class VehiclePort : MonoBehaviour
     //Vehicle detections
     private void OnTriggerStay2D(Collider2D collision)
     {
-        
+        ControlledVehicle v;
+        //If the vehicle is given
+        if(v = collision.GetComponent<ControlledVehicle>())
+        {
+            Destroy(collision.gameObject);
+        }
     }
 }

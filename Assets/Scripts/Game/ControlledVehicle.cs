@@ -73,8 +73,12 @@ public class ControlledVehicle : MonoBehaviour
         transform.eulerAngles = _.Angle(transform.eulerAngles.z + (turn * Time.fixedDeltaTime));
         transform.Translate(Vector2.up * speed * Time.fixedDeltaTime, Space.Self);
 
-        if(cosmetic) cosmetic.transform.localEulerAngles = new Vector2(-90f, turn * 3f / speed);
-}
+        if(cosmetic) cosmetic.transform.localEulerAngles = new Vector2(-90f, turn / 2f);
+    }
+    public void Dock(float targetAngle, float landHeight, Vector2 targetSpot)
+    {
+        
+    }
 }
 /// <summary>
 /// Object for keeping tracking of points
@@ -113,27 +117,27 @@ public class Path
     /// <param name="vec"></param>
     public void AppendPath(Vector2 vec)
     {
-        if (pts.Count == 0 || (pts[pts.Count - 1] - vec).sqrMagnitude > 0.2f)
-        {
-            
-            pts.Add(vec);
-            
-            if (line) { line.positionCount = pts.Count; line.SetPositions(Array.ConvertAll(pts.ToArray(), i => new Vector3(i.x, i.y, -3f))); }
-        }
+        //If one or less, just add
+        if (pts.Count <= 1) pts.Add(vec);
+        //If the second point from the end is too close, set the last point
+        else if ((pts[pts.Count - 2] - vec).sqrMagnitude < .7f) { pts[pts.Count - 1] = vec; }
+        else pts.Add(vec);
+        SetLine();
     }
     void SetLine()
     {
         if (line)
         {
-            if (line.positionCount != 0)
+            if (pts.Count > 1)
             {
-                Vector2 start = line.GetPosition(0);
-                line.positionCount = pts.Count;
+                Vector3 start = line.GetPosition(0);
+                line.positionCount = pts.Count + 1;
                 Vector3[] arr = new Vector3[pts.Count + 1];
                 Array.ConvertAll(pts.ToArray(), i => new Vector3(i.x, i.y, -3f)).CopyTo(arr, 1);
                 arr[0] = start; //Set follower point
                 line.SetPositions(arr); //Set line
             }
+            else line.positionCount = pts.Count; //Keep the one vertex on edge cases
         }
     }
     /// <summary>

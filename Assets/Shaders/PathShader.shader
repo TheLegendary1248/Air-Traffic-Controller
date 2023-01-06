@@ -43,14 +43,14 @@ Shader "Unlit/PathShader"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.screenPos = ComputeScreenPos(o.vertex);
-                o.screenPos *= _ScreenParams.xy;
+                //o.screenPos = ComputeScreenPos(o.vertex);
+                //o.screenPos *= _ScreenParams.xy;
                 return o;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
-                return (((i.uv.x + _Time.z * 1) % 1) > 0.5) ? _Color : _Color * 0.5;
+                return ((abs(i.uv.x - _Time.z * 1) % 1) > 0.5) ? _Color : _Color * 0.5;
             }
             ENDCG
         }

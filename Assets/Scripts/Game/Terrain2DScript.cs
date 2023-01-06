@@ -20,7 +20,7 @@ public class Terrain2DScript : MonoBehaviour
         waterMat = waterMRend.material;
         //Other stuff
         Texture2D tex = GradientToTex(primaryGradient,256);
-        landMFil.mesh = CreatePlane(new Vector2Int(250, 250));
+        landMFil.mesh = CreatePlane(new Vector2Int(150, 150));
         landMat.SetTexture("_MainTex", tex);
         waterMFil.mesh = CreatePlane(new Vector2Int(1, 1));
     }
