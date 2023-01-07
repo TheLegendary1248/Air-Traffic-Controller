@@ -14,7 +14,7 @@ public class CameraPanner : MonoBehaviour
             focus = _.WorldPoint();
         }
         focus += new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) * Time.deltaTime * speed;
-        zoom -= (Input.mouseScrollDelta.y * zoom) / 30;
+        zoom -= (Input.mouseScrollDelta.y * zoom) / 10;
         
     }
     private void FixedUpdate()

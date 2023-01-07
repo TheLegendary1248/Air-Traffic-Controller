@@ -24,35 +24,44 @@ public class ControlledVehicle : MonoBehaviour
     public GameObject cosmetic;
     public LineRenderer line;
     public GameObject deathFX;
+    bool hasEntered = false;
     /// <summary>
     /// The turning rate of the vehicle over a second
     /// </summary>    
     public float turnrate;
     public void Start()
     {
-        VehicleController.Main.AddVehicle(this);
+        //VehicleController.Main.AddVehicle(this);
+        //Setup path component
         path.line = line;
         path.threshold = speed;
     }
     public void OnDestroy()
     {
+        if (!gameObject.scene.isLoaded) return;
+        //Automatically remove the vehicle from the controller
         VehicleController.Main.RemoveVehicle(this);
+        //Remove trails gameobject to preserve them from destruction
+        TrailRenderer[] trails = GetComponentsInChildren<TrailRenderer>();
+        foreach (TrailRenderer trail in trails)
+        {
+            trail.autodestruct = true;
+            trail.transform.parent = null;
+        }
     }
     private void FixedUpdate()
     {
-        //Check plane has not hit something
+        //Check plane has not hit terrain
         float terra = 0;
         if (World.Main.GetTerrainHeight(transform.position, out terra))
         {
+            if (!hasEntered) { VehicleController.Main.AddVehicle(this); hasEntered = true; }
             Debug.DrawLine(transform.position, transform.position + new Vector3(0f, 0f, terra * 10f), Color.blue);
-            if (terra > -transform.position.z)
-            {
-                Destroy(gameObject);
-                Instantiate(deathFX, transform.position, transform.rotation);
-            }
-            
+            if (terra > -transform.position.z) Collision();
         }
-        
+        //Has left the playing field
+        else if (hasEntered) Collision();
+
         Vector2 v = Vector2.zero;
         //Follow path
         if(path.CheckPoint(transform.position, transform.up, out v))
@@ -72,8 +81,6 @@ public class ControlledVehicle : MonoBehaviour
                     * Mathf.Sign(l - timeToStop)
                     ;
             turn -= turndir;
-            Debug.DrawRay(transform.position, transform.right * Mathf.Sign(turndir), Color.cyan);
-            Debug.DrawLine(transform.position, (Vector3)v + new Vector3(0,0, -3f), Color.red);
             turn = Mathf.Clamp(turn, -maxturn, maxturn);
 
         }
@@ -89,15 +96,21 @@ public class ControlledVehicle : MonoBehaviour
 
         if(cosmetic) cosmetic.transform.localEulerAngles = new Vector2(-90f, turn / 2f);
     }
-    public void Dock(float targetAngle, float landHeight, Vector2 targetSpot)
+    //Function that surrenders the normal behaviour of the vehicle to be taken over by the port
+    public void Dock()
     {
-        
+        enabled = false;
+        path.ClearPath();
+        GetComponent<Collider2D>().enabled = false;
+        VehicleController.Main.RemoveVehicle(this);
     }
-    public void OnCollisionEnter2D(Collision2D collision)
+    public void Collision()
     {
+        //Destroy with style
         Instantiate(deathFX, transform.position, transform.rotation);
         Destroy(gameObject);
     }
+    public void OnCollisionEnter2D(Collision2D collision) => Collision();
 }
 /// <summary>
 /// Object for keeping tracking of points
@@ -129,7 +142,7 @@ public class Path
     /// <summary>
     /// Clears vehicle path
     /// </summary>
-    public void ClearPath() => pts.Clear();
+    public void ClearPath() { pts.Clear(); SetLine(); if (line) line.material.SetColor("_Color", Color.HSVToRGB(Time.fixedTime / 30 % 1, 1, 1)); }
     /// <summary>
     /// Adds onto the existing path
     /// </summary>
