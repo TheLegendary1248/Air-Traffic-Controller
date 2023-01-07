@@ -74,6 +74,7 @@ public class Terrain2DScript : MonoBehaviour
     /// <returns></returns>
     public static Texture2D GradientToTex(Gradient col, int resolution)
     {
+        //TODO Map to 'slope'
         Texture2D tex = new Texture2D(resolution, 1);
         for (int pix = 0; pix < resolution; pix++) tex.SetPixel(pix, 0, col.Evaluate((float)pix / resolution));
         tex.Apply();

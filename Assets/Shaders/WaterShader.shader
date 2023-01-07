@@ -3,7 +3,7 @@ Shader "Unlit/WaterShader"
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
-        _DiffTex("Modif Texture", 2D) = "" {}
+        _DiffTex("Modif Texture", 2D) = "black" {}
         _Color("Color", Color) = (0,0.5,1)
         _FoamColor("Color", Color) = (0.4,0.8,1)
         _ZOffset("Z Offset", float) = 0
@@ -27,7 +27,8 @@ Shader "Unlit/WaterShader"
 
             #include "UnityCG.cginc"
             #include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
-
+            #include "Common.hlsl"
+            
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -37,6 +38,7 @@ Shader "Unlit/WaterShader"
             struct v2f
             {
                 float2 uv : TEXCOORD0;
+                float2 difuv : TEXCOORD1;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
             };
@@ -57,12 +59,13 @@ Shader "Unlit/WaterShader"
                 _Cutoff *= 0.01;
                 v2f o;
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.difuv = v.uv;
 
                 float4 vert = v.vertex;
-                float noise = abs(_Cutoff);
-                float sloped = pow(noise, _Slope);
+                float height = abs(_Cutoff);
+                height = pow(height, _Slope);
 
-                vert.y += _Height * sloped;
+                vert.y += _Height * height;
                 o.vertex = UnityObjectToClipPos(vert);
                 //UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
@@ -75,6 +78,10 @@ Shader "Unlit/WaterShader"
                 _Cutoff *= 0.01;
                 float3 spot = float3(i.uv.xy, _ZOffset);
                 float noise = abs(ClassicNoise(spot));
+                //noise = pow(noise, _Slope);
+                fixed4 modif = tex2D(_DiffTex, i.difuv);
+                noise = ModifyByTex(modif, noise);
+
                 float movement = (sin(i.uv.x * 15 + _Time.y) * 0.01);
                 clip((noise < _Cutoff) - 1);
                 bool val = noise < _Cutoff - _Thresh + movement;
