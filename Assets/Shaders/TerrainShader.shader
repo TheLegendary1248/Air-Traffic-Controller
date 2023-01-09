@@ -3,7 +3,7 @@ Shader "Unlit/TerrainShader"
     Properties
     {
         _MainTex ("Color Palette", 2D) = "white" {}
-        _DiffTex("Terrain Modif", 2D) = "" {}
+        _DiffTex("Terrain Modif", 2D) = "black" {}
         _ZOffset ("Z Offset", float) = 0
         _Height ("Height", float) = 10
         _Slope ("Slope",float) = 4
@@ -24,6 +24,7 @@ Shader "Unlit/TerrainShader"
 
             #include "UnityCG.cginc"
             #include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise3D.hlsl"
+            #include "Common.hlsl"
 
             struct appdata
             {
@@ -37,6 +38,7 @@ Shader "Unlit/TerrainShader"
                 float2 difuv : TEXCOORD1;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
+                float height : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -52,19 +54,20 @@ Shader "Unlit/TerrainShader"
                 v2f o;
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.difuv = v.uv;
+                
                 //Change vert height to match color
                 float4 vert = v.vertex;
-                float noise = abs(ClassicNoise(float3(o.uv.xy, _ZOffset)));
-                
-                //Modif
-                /*
-                fixed4 modif = tex2Dlod(_DiffTex, float4(v.uv.xy,0,0));
-                modif.x = (modif.x * 2) - 1;
-                noise = lerp(noise + modif.x, modif.y, modif.z);
-                */
-                float sloped = pow(noise, _Slope);
-                vert.y += _Height * sloped;
+                float noise = ClassicNoise(float3(o.uv.xy, _ZOffset));
+                float sign = (noise > 0) * 2 - 1;
+                noise = abs(noise);
+                noise = pow(noise, _Slope);
 
+                //Modify by texture
+                fixed4 modif = tex2Dlod(_DiffTex, float4(v.uv.xy,0,0));
+                noise = ModifyByTex(modif, noise);
+                o.height = noise * sign;
+                //Adjustable height
+                vert.y += _Height * noise;
 
                 o.vertex = UnityObjectToClipPos(vert);
                 //UNITY_TRANSFER_FOG(o,o.vertex);
@@ -74,22 +77,8 @@ Shader "Unlit/TerrainShader"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                // sample the texture
-                
-                float3 spot = float3(i.uv.xy, _ZOffset);
-                float val = lerp(0.5,1,ClassicNoise(spot));
-                //FOR TERRAIN MODIF TEXTURE
-                //Use red channel as terrain 'target' height
-                //Use green channel as terrain lerp to 'target' height
-                //Use blue channel as terrain add/minus, mapped to -1, 1
-                //Use alpha channel as terrain add/minus effect multiplier
-                //height = lerp(val, target)
-                /*
-                fixed4 modif = tex2D(_DiffTex, i.difuv);
-                modif.x = (modif.x * 2) - 1;
-                val = lerp(val, modif.r, modif.g) + (modif.b * modif.a);
-                */
-                fixed4 col = tex2D(_MainTex, val);
+                fixed4 col = tex2D(_MainTex, i.height + 0.5);
+            //col = i.height * float4(1,-1,0,1);
                 col = lerp(0,col,i.uv.y % 0.2 > 0.1 ? 1 : 0.9);
                 // apply fog
                 // UNITY_APPLY_FOG(i.fogCoord, col);

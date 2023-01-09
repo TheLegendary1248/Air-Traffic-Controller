@@ -1294,87 +1294,111 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.ctime2
-      value: 22745
+      value: 23323
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.ctime3
-      value: 43176
+      value: 32189
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.ctime4
-      value: 48766
+      value: 43176
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.ctime5
-      value: 55319
+      value: 48766
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.ctime6
-      value: 65535
+      value: 55319
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
+      propertyPath: primaryGradient.key0.b
+      value: 0.3257387
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
+      propertyPath: primaryGradient.key0.g
+      value: 0.34134778
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
+      propertyPath: primaryGradient.key0.r
+      value: 0.3773585
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
+      propertyPath: primaryGradient.key1.b
+      value: 0.31367925
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
+      propertyPath: primaryGradient.key1.g
+      value: 0.37718222
+      objectReference: {fileID: 0}
+    - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
+      propertyPath: primaryGradient.key1.r
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key2.b
-      value: 0.04972606
+      value: 0.10484158
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key2.g
-      value: 0.6226415
+      value: 0.7169812
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key2.r
-      value: 0
+      value: 0.5221948
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key3.b
-      value: 0.19530971
+      value: 0.09033466
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key3.g
-      value: 0.7264151
+      value: 0.6603774
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key3.r
-      value: 0.2911169
+      value: 0.3393039
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key4.b
-      value: 0.04972606
+      value: 0.19530971
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key4.g
-      value: 0.6226415
+      value: 0.7264151
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key4.r
-      value: 0
+      value: 0.2911169
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key5.b
-      value: 0.36182803
+      value: 0.04972606
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key5.g
-      value: 0.41092256
+      value: 0.6226415
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key5.r
-      value: 0.4433962
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key6.b
-      value: 1
+      value: 0.36182803
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key6.g
-      value: 1
+      value: 0.41092256
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.key6.r
-      value: 1
+      value: 0.4433962
       objectReference: {fileID: 0}
     - target: {fileID: 8492848430327690524, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}
       propertyPath: primaryGradient.m_NumColorKeys
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c161fa97f37d4fc44b9975b53d607e0a, type: 3}

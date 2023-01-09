@@ -19,7 +19,7 @@ public class Terrain2DScript : MonoBehaviour
         landMat = landMRend.material;
         waterMat = waterMRend.material;
         //Other stuff
-        Texture2D tex = GradientToTex(primaryGradient,256);
+        Texture2D tex = GradientToTex(primaryGradient, secondaryGradient,256);
         landMFil.mesh = CreatePlane(new Vector2Int(150, 150));
         landMat.SetTexture("_MainTex", tex);
         waterMFil.mesh = CreatePlane(new Vector2Int(1, 1));
@@ -79,6 +79,23 @@ public class Terrain2DScript : MonoBehaviour
         for (int pix = 0; pix < resolution; pix++) tex.SetPixel(pix, 0, col.Evaluate((float)pix / resolution));
         tex.Apply();
         tex.filterMode = FilterMode.Point;
+        tex.wrapMode = TextureWrapMode.Clamp;
+        return tex;
+    }
+    public static Texture2D GradientToTex(Gradient col1, Gradient col2, int resolution)
+    {
+        //TODO Map to 'slope'
+        Texture2D tex = new Texture2D(resolution, 1);
+        int half = resolution / 2;
+        for (int pix = 0; pix < resolution; pix++) 
+            tex.SetPixel(pix, 0,
+                pix < half
+                ?
+                col1.Evaluate((float)(half - pix)/ half)
+                : col2.Evaluate((float)(pix - half)/ half));
+        tex.Apply();
+        tex.filterMode = FilterMode.Point;
+        tex.wrapMode = TextureWrapMode.Clamp;
         return tex;
     }
 }
