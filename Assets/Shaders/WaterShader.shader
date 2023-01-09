@@ -63,7 +63,7 @@ Shader "Unlit/WaterShader"
 
                 float4 vert = v.vertex;
                 float height = abs(_Cutoff);
-                height = pow(height, _Slope);
+                //height = pow(height, _Slope);
 
                 vert.y += _Height * height;
                 o.vertex = UnityObjectToClipPos(vert);
@@ -76,9 +76,8 @@ Shader "Unlit/WaterShader"
                 // sample the texture
                 _Thresh *= 0.001;
                 _Cutoff *= 0.01;
-                float3 spot = float3(i.uv.xy, _ZOffset);
-                float noise = abs(ClassicNoise(spot));
-                //noise = pow(noise, _Slope);
+                float noise = abs(ClassicNoise(float3(i.uv.xy, _ZOffset)));
+                noise = pow(noise, _Slope);
                 fixed4 modif = tex2D(_DiffTex, i.difuv);
                 noise = ModifyByTex(modif, noise);
 
