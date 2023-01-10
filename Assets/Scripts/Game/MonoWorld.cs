@@ -3,35 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Derivative of World that uses a singula terrain chunk as it's entirety
+/// Derivative of World that uses a singular terrain chunk as it's entirety
 /// </summary>
 public class MonoWorld : World
 {
     public TerrainChunk terrain;
-    public override Vector2 scale => terrain.scale;
-    public override Vector2 origin => terrain.origin;
-    public override Vector3 offset => terrain.offset;
-    // Start is called before the first frame update
+    public new Vector2 scale
+    {
+        get => terrain.scale;
+        set => terrain.scale = value;
+    }
+    public new Vector2 origin
+    {
+        get => terrain.origin;
+        set => terrain.origin = value;
+    }
+    public new Vector3 offset
+    {
+        get => terrain.offset;
+        set => terrain.offset = value;
+    }
+    public override void Awake() => base.Awake();
     public override void Start()
     {
-        base.Start();
         //Set values from inspector
-        this.scale = _scale;
+        scale = _scale;
         Debug.Log($"Scale of thing {scale.x}, {scale.y}");
-        this.origin = _origin;
+        origin = _origin;
         offset = _offset;
     }
-    // Update is called once per frame
     private void FixedUpdate()
     {
+        //Gradually move along z to transform world noise
         offset = new Vector3(0, 0, Time.fixedTime / 50f);
     }
-    public override bool GetTerrainHeight(Vector2 vec, out float result)
+    public override bool GetTerrainHeight(Vector2 pos, out float result)
     {
+        Debug.Log("Reached");
+        pos = ToTerrainCoord(pos); 
         result = 0;
-        if (WithinBorder(vec))
+        if (WithinBorder(pos))
         {
-            result = terrain.GetTerrainHeight(vec);
+            result = terrain.GetTerrainHeight(pos);
             return true;
         }
         else return false;

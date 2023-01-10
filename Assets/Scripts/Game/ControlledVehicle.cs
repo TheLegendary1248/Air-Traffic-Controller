@@ -34,7 +34,7 @@ public class ControlledVehicle : MonoBehaviour
         //VehicleController.Main.AddVehicle(this);
         //Setup path component
         path.line = line;
-        path.threshold = speed;
+        path.range = speed;
     }
     public void OnDestroy()
     {
@@ -96,7 +96,9 @@ public class ControlledVehicle : MonoBehaviour
 
         if(cosmetic) cosmetic.transform.localEulerAngles = new Vector2(-90f, turn / 2f);
     }
-    //Function that surrenders the normal behaviour of the vehicle to be taken over by the port
+    ///<summary>
+    ///Causes to surrender it's normal behaviour and remove it from the controller
+    ///</summary>
     public void Dock()
     {
         enabled = false;
@@ -104,6 +106,9 @@ public class ControlledVehicle : MonoBehaviour
         GetComponent<Collider2D>().enabled = false;
         VehicleController.Main.RemoveVehicle(this);
     }
+    ///<summary>
+    ///Destroys the vehicle 
+    ///</summary>
     public void Collision()
     {
         //Destroy with style
@@ -118,7 +123,14 @@ public class ControlledVehicle : MonoBehaviour
 public class Path
 {
     public List<Vector2> pts = new List<Vector2>();
-    public float threshold = 4f;
+    /// <summary>
+    /// Range from vehicle position that which points will be checked
+    /// </summary>
+    public float range = 4f;
+    /// <summary>
+    /// Minimum forced distance from the last point when adding new points
+    /// </summary>
+    public float unitRange = 0.7f;
     public LineRenderer line;
     
     /// <summary>
@@ -152,55 +164,55 @@ public class Path
         //If one or less, just add
         if (pts.Count <= 1) pts.Add(vec);
         //If the second point from the end is too close, set the last point
-        else if ((pts[pts.Count - 2] - vec).sqrMagnitude < .7f) { pts[pts.Count - 1] = vec; }
+        else if ((pts[pts.Count - 2] - vec).sqrMagnitude < unitRange) { pts[pts.Count - 1] = vec; }
         else pts.Add(vec);
         SetLine();
     }
+    /// <summary>
+    /// Rebuilds the line renderer if given
+    /// </summary>
     void SetLine()
     {
         if (line)
-        {
-            if (pts.Count > 1)
+            if (pts.Count > 1) //If the line renderer has enough points to render
             {
                 Vector3 start = line.GetPosition(0);
                 line.positionCount = pts.Count + 1;
                 Vector3[] arr = new Vector3[pts.Count + 1];
                 Array.ConvertAll(pts.ToArray(), i => new Vector3(i.x, i.y, -3f)).CopyTo(arr, 1);
-                arr[0] = start; //Set follower point
+                arr[0] = start;         //Set follower point
                 line.SetPositions(arr); //Set line
             }
             else line.positionCount = pts.Count; //Keep the one vertex on edge cases
-        }
     }
     /// <summary>
     /// Updates the first point in the given line renderer to match the follower
     /// </summary>
     public void UpdateFollowerPoint(Vector2 pos) { if (line && line.positionCount != 0) line.SetPosition(0, new Vector3(pos.x, pos.y, -3f)); }
     /// <summary>
-    /// 
+    /// Checks the vehicles
     /// </summary>
     /// <param name="pos"></param>
     /// <param name="dir"></param>
     public bool CheckPoint(Vector2 pos, Vector2 dir, out Vector2 next)
     {
-        //Check each point
         int i;
         int b = 0;
         for (i = 0; i < pts.Count; i++)
-        {
+        {   //Check each point from the beginning
             Vector2 pt = pts[i];
             Vector2 dif = pos - pt;
-            //If the point is close enough
-            if (dif.sqrMagnitude < threshold * threshold)
+            //If the point is close enough, continue iterating
+            if (dif.sqrMagnitude < range * range)
             {
-                //If the point is behind the object
+                //If the point is behind the object, remove it
                 if (Vector2.Dot(dir, pos - pt) > 0.75f) b = i + 1;
                 continue;
             }
             break;
         }
-        if (pts.Count != 0) next = pts[Mathf.Min(i, pts.Count - 1)];
-        else next = pos + dir; //Point ahead the given position anyways for convenience
+        if (pts.Count != 0) next = pts[Mathf.Min(i, pts.Count - 1)];//If not empty, give the point furthest in given range
+        else next = pos + dir;                                      //Point ahead the given position anyways for convenience
         //Remove past points
         pts.RemoveRange(0, b);
         SetLine();

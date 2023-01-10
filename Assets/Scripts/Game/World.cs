@@ -12,24 +12,35 @@ public class World : MonoBehaviour, ITerrain
     public float slope;
     public float height;
     public Terraformer terraformer;
+    //Values to expose in the inspector for fine tuning
     [SerializeField]
     protected Vector2 _scale;
     [SerializeField]
     protected Vector2 _origin;
     [SerializeField]
     protected Vector3 _offset;
-    public virtual Vector2 scale { get; set; }
-    public virtual Vector2 origin { get; set; }
-    public virtual Vector3 offset { get; set; }
+    public Vector2 scale { get; set; }
+    public Vector2 origin { get; set; }
+    public Vector3 offset { get; set; }
     public virtual void Start()
+    {
+
+    }
+    public virtual void Awake()
     {
         Main = this;
         calcrotation = transform.eulerAngles.x;
     }
-    //C
-    public virtual bool GetTerrainHeight(Vector2 vec, out float result)
+    /// <summary>
+    /// Gets the terrain height at position
+    /// </summary>
+    /// <param name="pos">Position in world</param>
+    /// <param name="result">Height at given position</param>
+    /// <returns>If given position is above any kind of valid terrain</returns>
+    public virtual bool GetTerrainHeight(Vector2 pos, out float result)
     {
-        Vector2 m = ToTerrainCoord(vec);
+        //Transform into terrain coordinates
+        Vector2 m = ToTerrainCoord(pos);
         
         result = 0;
         if (!worldBorder.Contains(m)) return false;
@@ -44,20 +55,22 @@ public class World : MonoBehaviour, ITerrain
     public virtual bool WithinBorder(Vector2 vec) => worldBorder.Contains(vec);
     //Precalc for rotation transformation in the next function
     protected float calcrotation = -45f;
-    float sin45 = Mathf.Sin(Mathf.Deg2Rad * -45f);
-    float cos45 = Mathf.Cos(Mathf.Deg2Rad * -45f);
+    float sinRot = Mathf.Sin(Mathf.Deg2Rad * -45f);
+    float cosRot = Mathf.Cos(Mathf.Deg2Rad * -45f);
+    
     /// <summary>
     /// Gets the 'terrain' coordinates from world coordinates to match with the shader noise
     /// </summary>
     public Vector2 ToTerrainCoord(Vector2 vec)
     {
-        if (transform.eulerAngles.x != calcrotation) 
-        {
-            calcrotation = transform.eulerAngles.x ;
-            sin45 = Mathf.Sin(Mathf.Deg2Rad * calcrotation); 
-            cos45 = Mathf.Cos(Mathf.Deg2Rad * calcrotation); 
+        if (transform.eulerAngles.x != calcrotation)
+        {   //If the world's rotation doesn't match the already calculated values, update them
+            calcrotation = transform.eulerAngles.x;
+            sinRot = Mathf.Sin(Mathf.Deg2Rad * calcrotation);
+            cosRot = Mathf.Cos(Mathf.Deg2Rad * calcrotation);
         }
-        return new Vector2((vec.x * cos45) - (vec.y * sin45), (vec.x * sin45) + (vec.y * cos45)); 
+        //Calculate rotation
+        return new Vector2((vec.x * cosRot) - (vec.y * sinRot), (vec.x * sinRot) + (vec.y * cosRot)); 
     }
 }
 //Interface for all forms of terrain

@@ -25,8 +25,8 @@ public class TerrainChunk : MonoBehaviour, ITerrain
         set
         {
             _scale = value;
-            landMat.SetTextureOffset("_MainTex", value);
-            waterMat.SetTextureOffset("_MainTex", value);
+            landMat.SetTextureScale("_MainTex", value);
+            waterMat.SetTextureScale("_MainTex", value);
         }
     }
     public Vector2 origin { get; set; }
@@ -44,7 +44,7 @@ public class TerrainChunk : MonoBehaviour, ITerrain
         }
     }
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //Instance each material to the renderer
         landMat = landMRend.material;
