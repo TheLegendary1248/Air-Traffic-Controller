@@ -2,16 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Terrain2DScript : MonoBehaviour
+public class TerrainChunk : MonoBehaviour, ITerrain
 {
+    public Vector2 terrainScale;
+    public Vector3 terrainOffset;
+    public Texture2D differentialTexture;
     public Gradient primaryGradient;
     public Gradient secondaryGradient;
+    //TODO Extract each visual as it's own object
     public MeshFilter landMFil;
     public MeshRenderer landMRend;
     public MeshFilter waterMFil;
     public MeshRenderer waterMRend;
     Material landMat;
     Material waterMat;
+    public float slope;
+    public float height;
+    Vector2 _scale;
+    public Vector2 scale 
+    {
+        get => _scale;
+        set
+        {
+            _scale = value;
+            landMat.SetTextureOffset("_MainTex", value);
+            waterMat.SetTextureOffset("_MainTex", value);
+        }
+    }
+    public Vector2 origin { get; set; }
+    Vector3 _offset;
+    public Vector3 offset 
+    {
+        get => _offset;
+        set
+        {
+            _offset = value;
+            landMat.SetTextureOffset("_MainTex", value);
+            waterMat.SetTextureOffset("_MainTex", value);
+            landMat.SetFloat("_ZOffset", value.z);
+            waterMat.SetFloat("_ZOffset", value.z);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +55,26 @@ public class Terrain2DScript : MonoBehaviour
         landMat.SetTexture("_MainTex", tex);
         waterMFil.mesh = CreatePlane(new Vector2Int(1, 1));
     }
-
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+    private void FixedUpdate()
+    {
+        landMat.SetFloat("_ZOffset", Time.time / 35f);
+        waterMat.SetFloat("_ZOffset", Time.time / 35f);
+    }
+    /// <summary>
+    /// Gets the terrain height relative to offsets and scale
+    /// </summary>
+    /// <param name="vec"></param>
+    /// <returns></returns>
+    public float GetTerrainHeight(Vector2 vec)
+    {
+        vec /= _scale;
+        return Mathf.Pow(Mathf.Abs(ShaderFunctions.ClassicNoise(new Vector3(vec.x, vec.y, Time.fixedTime / 35f))), slope) * height * 100f;
+    }
     Mesh CreatePlane(Vector2Int size)
     {
         Mesh m = new Mesh();
@@ -56,16 +106,7 @@ public class Terrain2DScript : MonoBehaviour
         m.triangles = tris;
         return m;
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    private void FixedUpdate()
-    {
-        landMat.SetFloat("_ZOffset", Time.time / 35f);
-        waterMat.SetFloat("_ZOffset", Time.time / 35f);
-    }
+    
     /// <summary>
     /// Creates a one pixel high texture gradient for the shader
     /// </summary>
@@ -98,4 +139,5 @@ public class Terrain2DScript : MonoBehaviour
         tex.wrapMode = TextureWrapMode.Clamp;
         return tex;
     }
+    
 }

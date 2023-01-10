@@ -5,6 +5,7 @@ Shader "Unlit/WaterShader"
         _MainTex("Texture", 2D) = "white" {}
         _DiffTex("Modif Texture", 2D) = "black" {}
         _Color("Color", Color) = (0,0.5,1)
+        _DeepColor("Deep Color", Color) = (0,0.3,0.8)
         _FoamColor("Color", Color) = (0.4,0.8,1)
         _ZOffset("Z Offset", float) = 0
         _Height("Height", float) = 10
@@ -51,6 +52,7 @@ Shader "Unlit/WaterShader"
             float _Cutoff;
             fixed _Slope;
             float4 _Color;
+            float4 _DeepColor;
             float4 _FoamColor;
             float _Thresh;
 
@@ -62,9 +64,10 @@ Shader "Unlit/WaterShader"
                 o.difuv = v.uv;
 
                 float4 vert = v.vertex;
+                //Height of the water
                 float height = abs(_Cutoff);
-                //height = pow(height, _Slope);
 
+                //Match overall height
                 vert.y += _Height * height;
                 o.vertex = UnityObjectToClipPos(vert);
                 //UNITY_TRANSFER_FOG(o,o.vertex);
@@ -80,12 +83,20 @@ Shader "Unlit/WaterShader"
                 noise = pow(noise, _Slope);
                 fixed4 modif = tex2D(_DiffTex, i.difuv);
                 noise = ModifyByTex(modif, noise);
+                
+                float movement = (sin(i.uv.x * 25 + _Time.y) * 0.00013);
+                //Discard any pixels below terrain
+                clip((noise < (_Cutoff + 0)) - 1);
+                /*
 
-                float movement = (sin(i.uv.x * 15 + _Time.y) * 0.01);
-                clip((noise < _Cutoff) - 1);
                 bool val = noise < _Cutoff - _Thresh + movement;
                 val = val && (0.2 * noise) < ((noise + _Cutoff + -_Thresh + movement + (_Time.x * 0.2)) % 0.06);
-                fixed4 col = val ? _Color : lerp(_Color,_FoamColor,noise * 4);
+                fixed4 col = val ? _Color : lerp(_Color,_FoamColor,noise * 4);*/
+                bool val = noise + movement < _Cutoff  / 2;
+                bool wave = ((noise + movement) + (_Time.x / 70)) % 0.001 > 0.0002;
+                val = val && wave;
+                _Color = lerp(_DeepColor,_Color,noise / _Cutoff);
+                fixed4 col = val ? _Color : lerp(_Color,_FoamColor, noise / _Cutoff);
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
