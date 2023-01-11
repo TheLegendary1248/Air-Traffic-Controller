@@ -50,9 +50,10 @@ public class World : MonoBehaviour, ITerrain
     /// <summary>
     /// Returns if the position is within world border
     /// </summary>
-    /// <param name="vec"></param>
+    /// <param name="pos"></param>
     /// <returns></returns>
-    public virtual bool WithinBorder(Vector2 vec) => worldBorder.Contains(vec);
+    public virtual bool WithinBorder(Vector2 pos) => worldBorder.Contains(ToTerrainCoord(pos / 100f));
+    public virtual bool WithinBorderRaw(Vector2 pos) => worldBorder.Contains(pos);
     //Precalc for rotation transformation in the next function
     protected float calcrotation = -45f;
     float sinRot = Mathf.Sin(Mathf.Deg2Rad * -45f);
@@ -63,14 +64,23 @@ public class World : MonoBehaviour, ITerrain
     /// </summary>
     public Vector2 ToTerrainCoord(Vector2 vec)
     {
+        //Divide by 100 scale the parent terrain object
+        vec /= 100;
         if (transform.eulerAngles.x != calcrotation)
         {   //If the world's rotation doesn't match the already calculated values, update them
+            Debug.Log("wtf?");
             calcrotation = transform.eulerAngles.x;
             sinRot = Mathf.Sin(Mathf.Deg2Rad * calcrotation);
             cosRot = Mathf.Cos(Mathf.Deg2Rad * calcrotation);
         }
         //Calculate rotation
         return new Vector2((vec.x * cosRot) - (vec.y * sinRot), (vec.x * sinRot) + (vec.y * cosRot)); 
+    }
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(worldBorder.center * 100, worldBorder.size * 100);
+        
     }
 }
 //Interface for all forms of terrain

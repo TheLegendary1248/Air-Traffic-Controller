@@ -28,7 +28,6 @@ public class MonoWorld : World
     {
         //Set values from inspector
         scale = _scale;
-        Debug.Log($"Scale of thing {scale.x}, {scale.y}");
         origin = _origin;
         offset = _offset;
     }
@@ -39,12 +38,14 @@ public class MonoWorld : World
     }
     public override bool GetTerrainHeight(Vector2 pos, out float result)
     {
-        Debug.Log("Reached");
-        pos = ToTerrainCoord(pos); 
+        
+        pos = ToTerrainCoord(pos);
+        Debug.DrawLine(pos * 100, Vector3.zero, Color.red);
         result = 0;
-        if (WithinBorder(pos))
+        if (WithinBorderRaw(pos))
         {
             result = terrain.GetTerrainHeight(pos);
+            Debug.Log($"Height for {pos} is {result}");
             return true;
         }
         else return false;

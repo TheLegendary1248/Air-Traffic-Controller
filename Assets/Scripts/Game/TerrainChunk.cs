@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TerrainChunk : MonoBehaviour, ITerrain
 {
-    public Vector2 terrainScale;
-    public Vector3 terrainOffset;
     public Texture2D differentialTexture;
     public Gradient primaryGradient;
     public Gradient secondaryGradient;
@@ -18,6 +16,7 @@ public class TerrainChunk : MonoBehaviour, ITerrain
     Material waterMat;
     public float slope;
     public float height;
+    [Tooltip("Scale of the noise generator"), SerializeField]
     Vector2 _scale;
     public Vector2 scale 
     {
@@ -30,6 +29,7 @@ public class TerrainChunk : MonoBehaviour, ITerrain
         }
     }
     public Vector2 origin { get; set; }
+    [Tooltip("Offset of the noise generator"), SerializeField]
     Vector3 _offset;
     public Vector3 offset 
     {
@@ -62,19 +62,25 @@ public class TerrainChunk : MonoBehaviour, ITerrain
     }
     private void FixedUpdate()
     {
-        landMat.SetFloat("_ZOffset", Time.time / 35f);
-        waterMat.SetFloat("_ZOffset", Time.time / 35f);
     }
     /// <summary>
     /// Gets the terrain height relative to offsets and scale
     /// </summary>
-    /// <param name="vec"></param>
+    /// <param name="pos"></param>
     /// <returns></returns>
-    public float GetTerrainHeight(Vector2 vec)
+    public float GetTerrainHeight(Vector2 pos)
     {
-        vec /= _scale;
-        return Mathf.Pow(Mathf.Abs(ShaderFunctions.ClassicNoise(new Vector3(vec.x, vec.y, Time.fixedTime / 35f))), slope) * height * 100f;
+        pos *= _scale;
+        Debug.Log($"Position {pos}, scale {_scale}");
+        return Mathf.Pow(
+            Mathf.Abs(
+                ShaderFunctions.ClassicNoise(
+                    (Vector3)pos + offset))
+            , slope) 
+        * height * 100f;
     }
+
+
     Mesh CreatePlane(Vector2Int size)
     {
         Mesh m = new Mesh();

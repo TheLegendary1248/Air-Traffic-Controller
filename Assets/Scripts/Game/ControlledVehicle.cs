@@ -56,7 +56,7 @@ public class ControlledVehicle : MonoBehaviour
         if (World.Main.GetTerrainHeight(transform.position, out terra))
         {
             if (!hasEntered) { VehicleController.Main.AddVehicle(this); hasEntered = true; }
-            Debug.DrawLine(transform.position, transform.position + new Vector3(0f, 0f, terra * 10f), Color.blue);
+            Debug.DrawLine(transform.position, transform.position + new Vector3(0f, 0f, terra * 10f), Color.red);
             if (terra > -transform.position.z) Collision();
         }
         //Has left the playing field
@@ -68,7 +68,7 @@ public class ControlledVehicle : MonoBehaviour
         {
             float timeToStop = Mathf.Abs(turn) / turnrate;
             float angleToPt = Vector2.SignedAngle(v - (Vector2)transform.position, transform.up);
-
+            //TODO Extract this
             //Quadratic Formula to solve from time 
             float absTurn = Mathf.Abs(turn);
             float b = turn * -Mathf.Sign(angleToPt); //Base turn
