@@ -84,7 +84,7 @@ Shader "Unlit/WaterShader"
                 fixed4 modif = tex2D(_DiffTex, i.difuv);
                 noise = ModifyByTex(modif, noise);
                 
-                float movement = (sin(i.uv.x * 25 + _Time.y) * 0.00013);
+                float movement = (sin(i.uv.x * 30 + _Time.y) * 0.00013);
                 //Discard any pixels below terrain
                 clip((noise < (_Cutoff + 0)) - 1);
                 /*
@@ -92,8 +92,8 @@ Shader "Unlit/WaterShader"
                 bool val = noise < _Cutoff - _Thresh + movement;
                 val = val && (0.2 * noise) < ((noise + _Cutoff + -_Thresh + movement + (_Time.x * 0.2)) % 0.06);
                 fixed4 col = val ? _Color : lerp(_Color,_FoamColor,noise * 4);*/
-                bool val = noise + movement < _Cutoff  / 2;
-                bool wave = ((noise + movement) + (_Time.x / 70)) % 0.001 > 0.0002;
+                bool val = noise + movement < _Cutoff  / 2.5;
+                bool wave = ((noise + movement) + (_Time.x / 100)) % 0.001 > 0.0002;
                 val = val && wave;
                 _Color = lerp(_DeepColor,_Color,noise / _Cutoff);
                 fixed4 col = val ? _Color : lerp(_Color,_FoamColor, noise / _Cutoff);

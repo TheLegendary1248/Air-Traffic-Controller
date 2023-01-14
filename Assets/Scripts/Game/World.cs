@@ -32,15 +32,16 @@ public class World : MonoBehaviour, ITerrain
         calcrotation = transform.eulerAngles.x;
     }
     /// <summary>
-    /// Gets the terrain height at position
+    /// Gets the terrain height at position and z-offset
     /// </summary>
     /// <param name="pos">Position in world</param>
     /// <param name="result">Height at given position</param>
     /// <returns>If given position is above any kind of valid terrain</returns>
-    public virtual bool GetTerrainHeight(Vector2 pos, out float result)
+    public virtual bool GetTerrainHeight(Vector3 pos, out float result)
     {
+        //DO NOT USE THIS VERSION
         //Transform into terrain coordinates
-        Vector2 m = ToTerrainCoord(pos);
+        Vector3 m = ToTerrainCoord(pos);
         
         result = 0;
         if (!worldBorder.Contains(m)) return false;

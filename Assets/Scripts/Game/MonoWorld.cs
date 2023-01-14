@@ -36,16 +36,14 @@ public class MonoWorld : World
         //Gradually move along z to transform world noise
         offset = new Vector3(0, 0, Time.fixedTime / 50f);
     }
-    public override bool GetTerrainHeight(Vector2 pos, out float result)
+    public override bool GetTerrainHeight(Vector3 pos, out float result)
     {
-        
+
         pos = ToTerrainCoord(pos);
-        Debug.DrawLine(pos * 100, Vector3.zero, Color.red);
         result = 0;
         if (WithinBorderRaw(pos))
         {
             result = terrain.GetTerrainHeight(pos);
-            Debug.Log($"Height for {pos} is {result}");
             return true;
         }
         else return false;

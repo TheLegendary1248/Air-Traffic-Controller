@@ -24,6 +24,15 @@ public static class _
         if (worldPlane.Raycast(r, out distance)) worldPosition = r.GetPoint(distance);
         return worldPosition;
     }
+    //Ty https://forum.unity.com/threads/pick-random-point-inside-box-collider.541585/
 
-    
+    public static Vector2 GetRandomPointInsideCollider(this BoxCollider2D boxCollider)
+    {
+        Vector2 extents = boxCollider.size / 2f;
+        Vector2 point = new Vector2(
+            Random.Range(-extents.x, extents.x),
+            Random.Range(-extents.y, extents.y)
+        ) + (Vector2)boxCollider.transform.position;
+        return boxCollider.transform.TransformPoint(point);
+    }
 }

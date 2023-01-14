@@ -41,7 +41,7 @@ public class ControlledVehicle : MonoBehaviour
         if (!gameObject.scene.isLoaded) return;
         //Automatically remove the vehicle from the controller
         VehicleController.Main.RemoveVehicle(this);
-        //Remove trails gameobject to preserve them from destruction
+        //Remove trail gameobject to preserve them from destruction
         TrailRenderer[] trails = GetComponentsInChildren<TrailRenderer>();
         foreach (TrailRenderer trail in trails)
         {
@@ -51,9 +51,9 @@ public class ControlledVehicle : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        //Check plane has not hit terrain
+        //Check plane has not hit terrain. Cast to Vector2 to lose Z
         float terra = 0;
-        if (World.Main.GetTerrainHeight(transform.position, out terra))
+        if (World.Main.GetTerrainHeight((Vector2)transform.position, out terra))
         {
             if (!hasEntered) { VehicleController.Main.AddVehicle(this); hasEntered = true; }
             Debug.DrawLine(transform.position, transform.position + new Vector3(0f, 0f, terra * 10f), Color.red);

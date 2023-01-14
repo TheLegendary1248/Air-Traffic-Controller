@@ -14,7 +14,7 @@ public class TiledWorld : World
     public bool keepSync;
 
     
-    public override bool GetTerrainHeight(Vector2 vec, out float result)
+    public override bool GetTerrainHeight(Vector3 vec, out float result)
     {
         if (keepSync)
         {

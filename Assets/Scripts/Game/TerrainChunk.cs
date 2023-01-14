@@ -71,7 +71,6 @@ public class TerrainChunk : MonoBehaviour, ITerrain
     public float GetTerrainHeight(Vector2 pos)
     {
         pos *= _scale;
-        Debug.Log($"Position {pos}, scale {_scale}");
         return Mathf.Pow(
             Mathf.Abs(
                 ShaderFunctions.ClassicNoise(
