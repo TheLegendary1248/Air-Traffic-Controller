@@ -29,6 +29,15 @@ public class ControlledVehicle : MonoBehaviour
     /// The turning rate of the vehicle over a second
     /// </summary>    
     public float turnrate;
+
+    /// <summary>
+    /// When a vehicle has left the scene
+    /// </summary>
+    public static event Action OnVehicleLeft;
+    /// <summary>
+    /// When a vehicle has entered the scene
+    /// </summary>
+    public static event Action OnVehicleEnter;
     public void Start()
     {
         //VehicleController.Main.AddVehicle(this);

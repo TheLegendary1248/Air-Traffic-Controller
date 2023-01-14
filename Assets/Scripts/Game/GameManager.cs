@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public static GameManager self;
     /// <summary>
+    /// The score of the current game
+    /// </summary>
+    public static float Score = 0f;
+    /// <summary>
     /// When the player is exiting the game session
     /// </summary>
     public static event Action OnExit;
@@ -27,5 +31,13 @@ public class GameManager : MonoBehaviour
     /// When the player has reached a win condition
     /// </summary>
     public static event Action OnWin;
-
+    /// <summary>
+    /// When the game has started
+    /// </summary>
+    public static event Action OnGameStart;
+    /// <summary>
+    /// When the player has entered a game session
+    /// </summary>
+    public static event Action OnEnter;
+    
 }
