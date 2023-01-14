@@ -59,7 +59,6 @@ public class World : MonoBehaviour, ITerrain
     protected float calcrotation = -45f;
     float sinRot = Mathf.Sin(Mathf.Deg2Rad * -45f);
     float cosRot = Mathf.Cos(Mathf.Deg2Rad * -45f);
-    
     /// <summary>
     /// Gets the 'terrain' coordinates from world coordinates to match with the shader noise
     /// </summary>

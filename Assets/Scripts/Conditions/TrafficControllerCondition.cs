@@ -41,7 +41,7 @@ public class TrafficControllerCondition : MonoBehaviour
     }
     public void VehicleCrash()
     {
-
+        
     }
     
     public void Start()
