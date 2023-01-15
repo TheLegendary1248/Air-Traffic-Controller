@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 /// <summary>
 /// Undescribed
 /// </summary>
@@ -32,21 +33,37 @@ public class TrafficControllerCondition : MonoBehaviour
     /// </summary>
     public float regen = 0.5f;
 
+    public Image barFill;
     
     // Start is called before the first frame update
     public void FixedUpdate()
     {
-        reputation = Mathf.Max(maxReputation, reputation + (regen * Time.fixedDeltaTime));
-        //Update UI visual
+        reputation = Mathf.Min(maxReputation, reputation + (regen * Time.fixedDeltaTime));
+        UpdateBar();
     }
     public void VehicleCrash()
     {
-        
+        //Give extra penalty for crashes that follow other crashes
+        float errorMultiCalc = Mathf.Lerp(1f, multiplier, (timeToCalm - (Time.fixedTime - timestampSinceLastFail)) / timeToCalm);
+        reputation -= errorMultiCalc * baseLoss;
+        timestampSinceLastFail = Time.fixedTime;
+        UpdateBar();
+    }
+    void UpdateBar()
+    {
+        float interpol = reputation / maxReputation;
+        barFill.fillAmount = interpol;
+        barFill.color = Color.HSVToRGB((127 * interpol) / 360f, .58f, 1);
     }
     
     public void Start()
     {
-        //Subscribe to vehicle crash event   
+        ControlledVehicle.OnVehicleCrash += VehicleCrash;
+
+    }
+    public void OnDestroy()
+    {
+        ControlledVehicle.OnVehicleCrash -= VehicleCrash;
     }
 
 }

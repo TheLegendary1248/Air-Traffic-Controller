@@ -38,15 +38,20 @@ public class ControlledVehicle : MonoBehaviour
     /// When a vehicle has entered the scene
     /// </summary>
     public static event Action OnVehicleEnter;
+    /// <summary>
+    /// LIKELY TEMPORARY. When a vehicle has been destroyed
+    /// </summary>
+    public static event Action OnVehicleCrash;
     public void Start()
     {
         //VehicleController.Main.AddVehicle(this);
         //Setup path component
         path.line = line;
         path.range = speed;
+        OnVehicleEnter?.Invoke();
     }
     public void OnDestroy()
-    {
+    {   
         if (!gameObject.scene.isLoaded) return;
         //Automatically remove the vehicle from the controller
         VehicleController.Main.RemoveVehicle(this);
@@ -57,6 +62,7 @@ public class ControlledVehicle : MonoBehaviour
             trail.autodestruct = true;
             trail.transform.parent = null;
         }
+        OnVehicleLeft?.Invoke();
     }
     private void FixedUpdate()
     {
@@ -123,6 +129,7 @@ public class ControlledVehicle : MonoBehaviour
         //Destroy with style
         Instantiate(deathFX, transform.position, transform.rotation);
         Destroy(gameObject);
+        OnVehicleCrash?.Invoke();
     }
     public void OnCollisionEnter2D(Collision2D collision) => Collision();
 }
