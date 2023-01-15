@@ -39,9 +39,10 @@ public class World : MonoBehaviour, ITerrain
     /// <returns>If given position is above any kind of valid terrain</returns>
     public virtual bool GetTerrainHeight(Vector3 pos, out float result)
     {
+        throw new System.NotImplementedException();
         //DO NOT USE THIS VERSION
         //Transform into terrain coordinates
-        Vector3 m = ToTerrainCoord(pos);
+        Vector3 m = AlignToWorld(pos);
         
         result = 0;
         if (!worldBorder.Contains(m)) return false;
@@ -53,7 +54,7 @@ public class World : MonoBehaviour, ITerrain
     /// </summary>
     /// <param name="pos"></param>
     /// <returns></returns>
-    public virtual bool WithinBorder(Vector2 pos) => worldBorder.Contains(ToTerrainCoord(pos / 100f));
+    public virtual bool WithinBorder(Vector2 pos) => worldBorder.Contains(AlignToWorld(pos));
     public virtual bool WithinBorderRaw(Vector2 pos) => worldBorder.Contains(pos);
     //Precalc for rotation transformation in the next function
     protected float calcrotation = -45f;
@@ -62,13 +63,10 @@ public class World : MonoBehaviour, ITerrain
     /// <summary>
     /// Gets the 'terrain' coordinates from world coordinates to match with the shader noise
     /// </summary>
-    public Vector2 ToTerrainCoord(Vector2 vec)
+    public Vector2 AlignToWorld(Vector2 vec)
     {
-        //Divide by 100 scale the parent terrain object
-        vec /= 100;
         if (transform.eulerAngles.x != calcrotation)
         {   //If the world's rotation doesn't match the already calculated values, update them
-            Debug.Log("wtf?");
             calcrotation = transform.eulerAngles.x;
             sinRot = Mathf.Sin(Mathf.Deg2Rad * calcrotation);
             cosRot = Mathf.Cos(Mathf.Deg2Rad * calcrotation);
@@ -76,10 +74,11 @@ public class World : MonoBehaviour, ITerrain
         //Calculate rotation
         return new Vector2((vec.x * cosRot) - (vec.y * sinRot), (vec.x * sinRot) + (vec.y * cosRot)); 
     }
+    
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(worldBorder.center * 100, worldBorder.size * 100);
+        Gizmos.DrawWireCube(worldBorder.center, worldBorder.size);
         
     }
 }

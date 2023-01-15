@@ -38,12 +38,12 @@ public class MonoWorld : World
     }
     public override bool GetTerrainHeight(Vector3 pos, out float result)
     {
-
-        pos = ToTerrainCoord(pos);
+        
+        pos = AlignToWorld(pos);
         result = 0;
         if (WithinBorderRaw(pos))
         {
-            result = terrain.GetTerrainHeight(pos);
+            result = terrain.GetTerrainHeight(pos / 100f);
             return true;
         }
         else return false;

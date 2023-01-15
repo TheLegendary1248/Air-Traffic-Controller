@@ -28,7 +28,7 @@ public class Cursor : MonoBehaviour
         transform.position = parentCanvas.transform.TransformPoint(movePos);
         //Calculate terrain height position
         Vector2 pos = 
-            World.Main.ToTerrainCoord(_.WorldPoint());
+            World.Main.AlignToWorld(_.WorldPoint());
             _.WorldPoint();
         
         //Debug.Log(pos);
