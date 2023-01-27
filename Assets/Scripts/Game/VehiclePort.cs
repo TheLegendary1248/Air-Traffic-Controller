@@ -9,6 +9,7 @@ public class VehiclePort : MonoBehaviour
 {
     public bool canSend;
     public bool canAccept;
+    public float angleThreshold = 20f;
     public Transform road;
 
 #if false //Placeholder
@@ -21,19 +22,22 @@ public class VehiclePort : MonoBehaviour
     public void Start()
     {
         endOfPort = road.position + ((road.up * road.localScale.y) / 2f) + ((-road.forward * road.localScale.z) / 2f);
-
     }
     //Vehicle detections
     private void OnTriggerStay2D(Collider2D collision)
     {
-        ControlledVehicle v;
+        ControlledVehicle vehicle;
         //If the vehicle is given
-        if(v = collision.GetComponent<ControlledVehicle>())
+        if(vehicle = collision.GetComponent<ControlledVehicle>())
         {
-            if(v.enabled)
+            if(vehicle.enabled)
             {
-                v.Dock();
-                StartCoroutine(DockVehicleAnim(v.gameObject, 5f));
+                //Check that vehicle is positioned correctly to dock
+                if (Mathf.DeltaAngle(vehicle.transform.eulerAngles.z, transform.eulerAngles.z) > angleThreshold) return;
+
+                //Proceed to dock
+                vehicle.Dock();
+                StartCoroutine(DockVehicleAnim(vehicle.gameObject, 5f));
             }
         }
     }
