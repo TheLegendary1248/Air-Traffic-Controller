@@ -12,6 +12,7 @@ public class ClientSettings : MonoBehaviour
     [RuntimeInitializeOnLoadMethod]
     public static void LoadSettings()
     {
+        return;
         using (StreamReader file = File.OpenText(Application.persistentDataPath + "/clientSettings.json"))
         {
 

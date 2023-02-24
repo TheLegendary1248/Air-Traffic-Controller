@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Generic functions to be called by the main menu for a game loop
@@ -21,7 +22,7 @@ public class MainMenu : MonoBehaviour
     //Load a game into session
     void LoadGame()
     {
-        
+        SceneManager.LoadScene(1, LoadSceneMode.Additive);
     }
     static void Exit() => Application.Quit();
     

@@ -48,6 +48,14 @@ public class TrafficControllerCondition : MonoBehaviour
         reputation -= errorMultiCalc * baseLoss;
         timestampSinceLastFail = Time.fixedTime;
         UpdateBar();
+        if(reputation < 0)
+        {
+            LoseCondition();
+        }
+    }
+    public void LoseCondition()
+    {
+        GameManager.Lose();
     }
     void UpdateBar()
     {
