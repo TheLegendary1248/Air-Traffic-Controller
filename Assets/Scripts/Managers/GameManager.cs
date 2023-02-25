@@ -39,5 +39,18 @@ public class GameManager : MonoBehaviour
     /// When the player has entered a game session
     /// </summary>
     public static event Action OnEnter;
-    
+    public static void StartGame()
+    {
+        OnGameStart?.Invoke();
+    }
+    public static void Lose()
+    {
+        OnLose?.Invoke();
+        OnGameOver?.Invoke();
+    }
+    public static void Win()
+    {
+        OnWin?.Invoke();
+        OnGameOver?.Invoke();
+    }
 }
