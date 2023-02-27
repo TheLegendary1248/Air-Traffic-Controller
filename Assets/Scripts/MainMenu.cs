@@ -8,23 +8,9 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MainMenu : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  
     //Load a game into session
-    void LoadGame()
-    {
-        SceneManager.LoadScene(1, LoadSceneMode.Additive);
-    }
-    static void Exit() => Application.Quit();
     
-    
+    public static void ExitGame() => Application.Quit();
+    public static void StartGame() => GameManager.StartGame();
 }

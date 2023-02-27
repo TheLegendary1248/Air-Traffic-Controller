@@ -39,18 +39,33 @@ public class GameManager : MonoBehaviour
     /// When the player has entered a game session
     /// </summary>
     public static event Action OnEnter;
+    /// <summary>
+    /// Boolean to keep the game from calling OnGameOver multiple times
+    /// </summary>
+    public static bool gameOver = true;
     public static void StartGame()
     {
-        OnGameStart?.Invoke();
+        if (gameOver)
+        {
+            gameOver = false;
+            OnGameStart?.Invoke();
+        }
     }
     public static void Lose()
     {
-        OnLose?.Invoke();
-        OnGameOver?.Invoke();
+        if(!gameOver)
+        {
+            OnLose?.Invoke();
+            OnGameOver?.Invoke();
+            gameOver = true;
+        }
     }
     public static void Win()
     {
-        OnWin?.Invoke();
-        OnGameOver?.Invoke();
+        if (!gameOver)
+        {
+            OnWin?.Invoke();
+            OnGameOver?.Invoke();
+        }
     }
 }

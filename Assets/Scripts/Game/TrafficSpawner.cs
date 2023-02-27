@@ -11,7 +11,12 @@ public class TrafficSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timer = StartCoroutine(Wave(3f));
+        GameManager.OnGameStart += () => timer = StartCoroutine(Wave(3f));
+        GameManager.OnGameOver += () =>
+        {
+            StopCoroutine(timer);
+            timer = null;
+        };
     }
     IEnumerator Wave(float time)
     {
@@ -21,21 +26,25 @@ public class TrafficSpawner : MonoBehaviour
     }
     void SpawnPlane()
     {
-        Vector2 v = World.Main.AlignToWorld(GetSpwnPt());
+        //Generate a random spawn point
+        Vector2 v = World.Main.AlignToWorld(RandomValidSpawn());
+        //Height and look ahead time of terrain
+        float lagTime = 0f;
         float height = 0f;
         //Check terrain at spot
         for (int i = 0; i < 10; i++)
         {
-            World.Main.GetTerrainHeight((Vector3)v + new Vector3(0, 0, -10f), out height);
+            World.Main.GetTerrainHeight((Vector3)v + new Vector3(0, 0, lagTime), out height);
             //Land is low enough that we can assume that it's mostly free of obstruction
             if (height < 1) break;
         }
         //Test spot
         float angle = Vector2.SignedAngle(Vector2.down, v);
         GameObject gb = Instantiate(plane, new Vector3(v.x,70f + v.y,-3f), Quaternion.Euler(0,0,angle));
+        
     }
     //Extract this as an extension method to Rects later
-    Vector2 GetSpwnPt()
+    Vector2 RandomValidSpawn()
     {
         //TODO Center on rect
         Rect border = World.Main.worldBorder;
