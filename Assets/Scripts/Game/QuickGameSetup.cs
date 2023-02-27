@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 public class QuickGameSetup : MonoBehaviour
 {
-    public static QuickGameSettings setting;
     public MonoWorld world;
     public Spawner spawner;
-
-
-    public void SetSizeX(float i)
+    public NumberSliderSync widthInput;
+    public NumberSliderSync lengthInput;
+    public NumberSliderSync zOffsetInput;
+    public void Awake()
     {
-
-        setting.terrainSize = new Vector2(i, setting.terrainSize.x); 
+        widthInput.onValueChange += SetTerrainWidth;
+        //lengthInput.onValueChange += SetTerrainLength;
     }
-
-    public void SetSizeY(float i) => setting.terrainSize = new Vector2(setting.terrainSize.x, i);
-    public void SetRate(float s) => setting.SpawnRate = s;
-    public void SetRateGrowth(float s) => setting.SpawnRateGrowth = s;
-    public void SetRateMax(float s) => setting.MaxSpawnRate = s;
-    //Figure out Airport Setup later
-    public void SetTerrainChangeScroll(float i) => setting.TerrainZScrollSpeed = i;
+    public void SetTerrainWidth(float val)
+    {
+        world.scale = new Vector2(world.scale.x, val);
+    }
+    public void SetTerrainLength(float val)
+    {
+        world.scale = new Vector2(val, world.scale.y);
+    }
+    
+    
 }
 public struct QuickGameSettings
 {
