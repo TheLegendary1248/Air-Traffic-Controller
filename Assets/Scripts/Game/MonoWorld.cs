@@ -34,7 +34,8 @@ public class MonoWorld : World
     private void FixedUpdate()
     {
         //Gradually move along z to transform world noise
-        offset = new Vector3(0, 0, Time.fixedTime / 50f);
+
+        if(!GameManager.gameOver) offset = new Vector3(0, 0, Time.fixedTime / 50f);
     }
     public override bool GetTerrainHeight(Vector3 pos, out float result)
     {

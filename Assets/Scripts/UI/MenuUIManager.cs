@@ -2,19 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameUIManager : MonoBehaviour
+public class MenuUIManager : MonoBehaviour
 {
     public Animation animation;
     private void Awake()
     {
         GameManager.OnGameStart += OnGameStart;
         GameManager.OnGameOver += OnGameOver;
-        gameObject.SetActive(false);
     }
-    
+
     public void OnGameStart()
     {
-        gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
     public void OnGameOver()
     {
@@ -25,5 +24,4 @@ public class GameUIManager : MonoBehaviour
         //Play anim
         animation.Play("AddGameUI");
     }
-    
 }
