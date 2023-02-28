@@ -11,7 +11,7 @@ public class QuickGameSetup : MonoBehaviour
     public void Awake()
     {
         widthInput.onValueChange += SetTerrainWidth;
-        //lengthInput.onValueChange += SetTerrainLength;
+        lengthInput.onValueChange += SetTerrainLength;
     }
     public void SetTerrainWidth(float val)
     {
@@ -20,6 +20,10 @@ public class QuickGameSetup : MonoBehaviour
     public void SetTerrainLength(float val)
     {
         world.scale = new Vector2(val, world.scale.y);
+    }
+    public void SetTerrainScale(float val)
+    {
+        world.scale = new Vector2(val, val);
     }
     
     
