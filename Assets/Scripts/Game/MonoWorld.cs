@@ -32,6 +32,7 @@ public class MonoWorld : World
         {
             terrain.scale = value;
             transform.localScale = new Vector3(value.x * 10, transform.localScale.y, value.y * 10);
+            worldBorder = new Rect(Vector2.zero, new Vector2(value.x * 10, value.y * 10));
         }
     }
     public override void Awake() => base.Awake();
