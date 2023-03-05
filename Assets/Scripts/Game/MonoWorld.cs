@@ -23,6 +23,17 @@ public class MonoWorld : World
         get => terrain.offset;
         set => terrain.offset = value;
     }
+    /// <summary>
+    /// Placeholder for quickly setting terrain dimensions for reasons
+    /// </summary>
+    public new Vector2 dimensions
+    {
+        set
+        {
+            terrain.scale = value;
+            transform.localScale = new Vector3(value.x * 10, transform.localScale.y, value.y * 10);
+        }
+    }
     public override void Awake() => base.Awake();
     public override void Start()
     {
@@ -34,7 +45,6 @@ public class MonoWorld : World
     private void FixedUpdate()
     {
         //Gradually move along z to transform world noise
-
         if(!GameManager.gameOver) offset = new Vector3(0, 0, Time.fixedTime / 50f);
     }
     public override bool GetTerrainHeight(Vector3 pos, out float result)

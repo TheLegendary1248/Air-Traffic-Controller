@@ -15,11 +15,11 @@ public class QuickGameSetup : MonoBehaviour
     }
     public void SetTerrainWidth(float val)
     {
-        world.scale = new Vector2(world.scale.x, val);
+        world.dimensions = new Vector2(world.scale.x, val);
     }
     public void SetTerrainLength(float val)
     {
-        world.scale = new Vector2(val, world.scale.y);
+        world.dimensions = new Vector2(val, world.scale.y);
     }
     public void SetTerrainScale(float val)
     {
