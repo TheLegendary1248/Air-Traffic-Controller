@@ -70,13 +70,15 @@ public class TerrainChunk : MonoBehaviour, ITerrain
     /// <returns></returns>
     public float GetTerrainHeight(Vector2 pos)
     {
-        pos *= new Vector2(10f, 10f); //welp, there goes my planes, pun intended
+        float HARDCODED2 = 10f;
+        float HARDCODED3 = 100f;
+        pos *= new Vector2(HARDCODED2, HARDCODED2); //welp, there goes my planes, pun intended
         return Mathf.Pow(
             Mathf.Abs(
                 ShaderFunctions.ClassicNoise(
                     (Vector3)pos + offset))
             , slope) 
-        * height * 100f;
+        * height * HARDCODED3;
     }
 
 

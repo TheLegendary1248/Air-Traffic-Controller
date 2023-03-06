@@ -31,8 +31,9 @@ public class MonoWorld : World
         set
         {
             terrain.scale = value;
-            transform.localScale = new Vector3(value.x * 10, transform.localScale.y, value.y * 10);
-            worldBorder = new Rect(Vector2.zero, new Vector2(value.x * 10, value.y * 10));
+            float HARDCODE = 10f;
+            transform.localScale = new Vector3(value.x * HARDCODE, transform.localScale.y, value.y * HARDCODE);
+            worldBorder = new Rect(Vector2.zero, new Vector2(value.x * HARDCODE, value.y * HARDCODE));
         }
     }
     public override void Awake() => base.Awake();
@@ -45,6 +46,7 @@ public class MonoWorld : World
     }
     private void FixedUpdate()
     {
+        //HARDCODED
         //Gradually move along z to transform world noise
         if(!GameManager.gameOver) offset = new Vector3(0, 0, Time.fixedTime / 50f);
     }
@@ -55,6 +57,7 @@ public class MonoWorld : World
         result = 0;
         if (WithinBorderRaw(pos))
         {
+            //HARDCODED
             result = terrain.GetTerrainHeight(pos / 100f);
             return true;
         }
