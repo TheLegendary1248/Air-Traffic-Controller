@@ -70,7 +70,7 @@ public class TerrainChunk : MonoBehaviour, ITerrain
     /// <returns></returns>
     public float GetTerrainHeight(Vector2 pos)
     {
-        pos *= _scale;
+        pos *= new Vector2(10f, 10f); //welp, there goes my planes, pun intended
         return Mathf.Pow(
             Mathf.Abs(
                 ShaderFunctions.ClassicNoise(
