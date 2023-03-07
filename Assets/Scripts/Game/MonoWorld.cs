@@ -31,9 +31,9 @@ public class MonoWorld : World
         set
         {
             terrain.scale = value;
-            float HARDCODE = 10f;
-            transform.localScale = new Vector3(value.x * HARDCODE, transform.localScale.y, value.y * HARDCODE);
-            worldBorder = new Rect(Vector2.zero, new Vector2(value.x * HARDCODE, value.y * HARDCODE));
+            float HARDCODE = 1f; // 10f
+            transform.localScale = new Vector3(value.x * scale.x, transform.localScale.y, value.y * scale.y);
+            worldBorder = new Rect(Vector2.zero, new Vector2(value.x * scale.x, value.y * scale.y));
         }
     }
     public override void Awake() => base.Awake();
@@ -46,19 +46,29 @@ public class MonoWorld : World
     }
     private void FixedUpdate()
     {
+        
         //HARDCODED
         //Gradually move along z to transform world noise
         if(!GameManager.gameOver) offset = new Vector3(0, 0, Time.fixedTime / 50f);
     }
+    /// <summary>
+    /// Gets terrain height of the world
+    /// </summary>
+    /// <param name="pos">The point to sample</param>
+    /// <param name="result">The height of the terrain at 'pos'</param>
+    /// <returns></returns>
     public override bool GetTerrainHeight(Vector3 pos, out float result)
     {
-        
+        float HARDCODE = 1f;//100f;
+        //Fix up scaling
+        Vector3 parentScale = Main.transform.localScale;
+        //
         pos = AlignToWorld(pos);
         result = 0;
         if (WithinBorderRaw(pos))
         {
-            //HARDCODED
-            result = terrain.GetTerrainHeight(pos / 100f);
+            pos.Scale(new Vector3(1 / scale.x, 1 / scale.y, 1f));
+            result = terrain.GetTerrainHeight(pos / HARDCODE) * Main.transform.localScale.y;
             return true;
         }
         else return false;
